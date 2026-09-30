@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
 import {
-  Sparkles,
   Send,
-  Download,
-  Copy,
-  Check,
-  RotateCcw,
   ExternalLink,
   ShieldCheck,
+  ShieldAlert,
+  Shield,
   Table,
   FileText,
-  Layers,
+  Copy,
+  Check,
+  Download,
   Terminal,
-  BotMessageSquare,
-  Globe2,
+  Sparkles,
 } from 'lucide-react';
 import { SavedDatasetRecord } from '../types';
 
@@ -29,17 +27,18 @@ export const DesktopDashboardView: React.FC<DesktopDashboardViewProps> = ({
   const [rightTab, setRightTab] = useState<'cards' | 'table' | 'readme'>('cards');
   const [filterTrust, setFilterTrust] = useState<'all' | 'high' | 'med'>('all');
 
-  // Chat state
+  // Chat log state
   const [chatLog, setChatLog] = useState<Array<{ role: 'user' | 'assistant'; text: string; time: string }>>([
     {
       role: 'assistant',
-      text: `**Gemma 4 Academic Engine Active.** I am your research assistant. Ask me to discover accessible datasets on Zenodo, Kaggle, or Hugging Face, audit licensing risks, or draft your study's README and Data Dictionary.`,
-      time: 'Just now',
+      text: `Gemma 4 academic engine ready. Ask to find open datasets, audit licenses, or evaluate sampling bias for your study.`,
+      time: 'Ready',
     },
   ]);
   const [chatInput, setChatInput] = useState('');
   const [isChatLoading, setIsChatLoading] = useState(false);
   const [copiedSnippetId, setCopiedSnippetId] = useState<string | null>(null);
+  const [copiedReadme, setCopiedReadme] = useState(false);
 
   const handleSendChat = async (promptOverride?: string) => {
     const text = promptOverride ?? chatInput;
@@ -64,11 +63,11 @@ export const DesktopDashboardView: React.FC<DesktopDashboardViewProps> = ({
 
       if (res.ok) {
         const data = await res.json();
-        let reply = `**Gemma 4 Discovery Report:**\n${data.summary || 'Datasets discovered.'}\n\n`;
+        let reply = `${data.summary || 'Open repository query complete.'}\n\n`;
         if (data.datasets && data.datasets.length > 0) {
-          reply += `**Recommended Open Data Repositories:**\n`;
+          reply += `Found ${data.datasets.length} repository matches:\n`;
           data.datasets.forEach((d: any) => {
-            reply += `- **${d.title}** (${d.repository}) • *${d.license || 'License Unknown'}* • **${d.trust_score || 'Medium'} Trust**\n`;
+            reply += `• ${d.title} (${d.repository}) — ${d.license || 'License Unknown'} [${d.trust_score || 'Medium'} Trust]\n`;
           });
         }
         setChatLog((prev) => [
@@ -80,14 +79,14 @@ export const DesktopDashboardView: React.FC<DesktopDashboardViewProps> = ({
           },
         ]);
       } else {
-        throw new Error('API request fallback');
+        throw new Error('API fallback');
       }
     } catch {
       setChatLog((prev) => [
         ...prev,
         {
           role: 'assistant',
-          text: `**Academic Guidance for:** "${text}"\n- Evaluated repository provenance across Zenodo (DOI referenced) and Hugging Face.\n- Verified license permissions; check the right panel Data Dictionary and README.md tabs for auto-formatted outputs.`,
+          text: `Inquiry parsed: "${text}". Evaluated repository candidates across Zenodo and Hugging Face. Check the right panel for structured cards and schema.`,
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         },
       ]);
@@ -116,19 +115,19 @@ export const DesktopDashboardView: React.FC<DesktopDashboardViewProps> = ({
     <div className="flex-1 flex flex-col lg:flex-row overflow-hidden bg-slate-50 h-[calc(100vh-53px)]">
       
       {/* ======================================================================== */}
-      {/* LEFT PANEL: INTERACTIVE CHAT & COMMAND INPUT (Gemma 4 Assistant) */}
+      {/* LEFT PANEL: INTERACTIVE CHAT & COMMAND INPUT                             */}
       {/* ======================================================================== */}
-      <section className="w-full lg:w-[420px] xl:w-[460px] bg-white border-r border-slate-200 flex flex-col h-full shrink-0">
+      <section className="w-full lg:w-[440px] xl:w-[480px] bg-white border-r border-slate-200 flex flex-col h-full shrink-0">
         
-        {/* Chat Header */}
-        <div className="p-3.5 border-b border-slate-200 flex items-center justify-between bg-white">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 border border-blue-200 flex items-center justify-center font-bold text-xs">
+        {/* Chat Header with Generous Padding */}
+        <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between bg-white shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 border border-blue-200 flex items-center justify-center font-bold text-xs">
               🤖
             </div>
             <div>
-              <h2 className="text-xs font-bold text-[#0F172A]">Gemma 4 Research Assistant</h2>
-              <p className="text-[10px] text-slate-500 font-mono">model: gemma-4-31b-it • Google AI Studio</p>
+              <h2 className="text-xs font-bold text-[#0F172A]">Gemma 4 Copilot</h2>
+              <p className="text-[11px] text-slate-500 font-mono">gemma-4-31b-it • Google AI Studio</p>
             </div>
           </div>
           <button
@@ -136,60 +135,62 @@ export const DesktopDashboardView: React.FC<DesktopDashboardViewProps> = ({
               setChatLog([
                 {
                   role: 'assistant',
-                  text: 'Chat session reset. Ready for new dataset queries.',
-                  time: 'Just now',
+                  text: 'Chat reset. Ready for new dataset queries.',
+                  time: 'Ready',
                 },
               ])
             }
-            className="text-[11px] text-slate-500 hover:text-[#0F172A] px-2 py-1 rounded hover:bg-slate-100 transition-colors cursor-pointer"
+            className="text-xs text-slate-500 hover:text-[#0F172A] px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
           >
             Reset
           </button>
         </div>
 
-        {/* Preset Prompts Pill Bar */}
-        <div className="px-3 py-2 bg-slate-50/80 border-b border-slate-200 flex items-center gap-1.5 overflow-x-auto text-[11px]">
-          <span className="text-[10px] font-bold uppercase text-slate-400 shrink-0">Prompts:</span>
+        {/* Preset Prompts Bar with Generous Padding */}
+        <div className="px-5 py-3 bg-slate-50/80 border-b border-slate-200 flex items-center gap-2 overflow-x-auto text-xs shrink-0">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 shrink-0">
+            Prompts:
+          </span>
           <button
             onClick={() => handleSendChat('Find Zenodo climate datasets with DOI and hourly sensor readings')}
-            className="px-2 py-0.5 rounded-full bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 shrink-0 transition-colors cursor-pointer"
+            className="px-3 py-1 rounded-full bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 shrink-0 transition-colors cursor-pointer font-medium"
           >
             Climate Zenodo
           </button>
           <button
             onClick={() => handleSendChat('Audit Kaggle retail dataset with Unknown license for academic publication')}
-            className="px-2 py-0.5 rounded-full bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 shrink-0 transition-colors cursor-pointer"
+            className="px-3 py-1 rounded-full bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 shrink-0 transition-colors cursor-pointer font-medium"
           >
             License Audit
           </button>
           <button
             onClick={() => handleSendChat('Generate Markdown README and column dictionary for patient EHR table')}
-            className="px-2 py-0.5 rounded-full bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 shrink-0 transition-colors cursor-pointer"
+            className="px-3 py-1 rounded-full bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 shrink-0 transition-colors cursor-pointer font-medium"
           >
             README Gen
           </button>
         </div>
 
-        {/* Chat Messages Scrollable Log */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 text-xs">
+        {/* Chat Messages Stream */}
+        <div className="flex-1 overflow-y-auto p-5 space-y-4 text-xs">
           {chatLog.map((msg, idx) => {
             const isUser = msg.role === 'user';
             return (
-              <div key={idx} className={`flex gap-2.5 ${isUser ? 'justify-end' : ''}`}>
+              <div key={idx} className={`flex gap-3 ${isUser ? 'justify-end' : ''}`}>
                 {!isUser && (
-                  <div className="w-6 h-6 rounded-md bg-blue-600 text-white flex items-center justify-center font-bold text-[10px] shrink-0">
+                  <div className="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-[10px] shrink-0 shadow-xs">
                     G4
                   </div>
                 )}
                 <div
-                  className={`rounded-xl p-3 leading-relaxed max-w-[88%] ${
+                  className={`rounded-xl p-3.5 leading-relaxed max-w-[88%] ${
                     isUser
-                      ? 'bg-blue-600 text-white font-medium'
+                      ? 'bg-blue-600 text-white font-medium shadow-xs'
                       : 'bg-slate-50 border border-slate-200 text-slate-800 space-y-1'
                   }`}
                 >
-                  <div className="flex items-center justify-between text-[10px] opacity-75 mb-1">
-                    <span className="font-bold">{isUser ? 'Researcher' : 'Gemma 4 Engine'}</span>
+                  <div className="flex items-center justify-between text-[10px] opacity-75 mb-1 pb-1 border-b border-black/5">
+                    <span className="font-bold">{isUser ? 'You' : 'Gemma 4'}</span>
                     <span>{msg.time}</span>
                   </div>
                   <div className="whitespace-pre-wrap">{msg.text}</div>
@@ -199,20 +200,20 @@ export const DesktopDashboardView: React.FC<DesktopDashboardViewProps> = ({
           })}
 
           {isChatLoading && (
-            <div className="flex gap-2.5">
-              <div className="w-6 h-6 rounded-md bg-blue-600 text-white flex items-center justify-center font-bold text-[10px] shrink-0">
+            <div className="flex gap-3">
+              <div className="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-[10px] shrink-0">
                 G4
               </div>
-              <div className="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-500 text-xs flex items-center gap-2">
+              <div className="bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-500 text-xs flex items-center gap-2.5">
                 <span className="w-2 h-2 rounded-full bg-blue-600 animate-ping" />
-                <span>Gemma 4 is querying academic repositories...</span>
+                <span>Gemma 4 is querying repositories...</span>
               </div>
             </div>
           )}
         </div>
 
-        {/* Chat Input Box */}
-        <div className="p-3 border-t border-slate-200 bg-white">
+        {/* Chat Input Box with Generous Padding */}
+        <div className="p-4 border-t border-slate-200 bg-white shrink-0">
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -231,18 +232,18 @@ export const DesktopDashboardView: React.FC<DesktopDashboardViewProps> = ({
                 }
               }}
               placeholder="Ask Gemma 4: find datasets, audit provenance, evaluate bias..."
-              className="w-full pl-3 pr-20 py-2 bg-slate-50 border border-slate-200 focus:bg-white focus:border-blue-600 rounded-lg text-xs text-[#0F172A] placeholder-slate-400 outline-hidden resize-none transition-all"
+              className="w-full pl-3.5 pr-24 py-2.5 bg-slate-50 border border-slate-300 focus:bg-white focus:border-blue-600 rounded-xl text-xs text-[#0F172A] placeholder-slate-400 outline-hidden resize-none transition-all"
             />
             <button
               type="submit"
               disabled={!chatInput.trim() || isChatLoading}
-              className="absolute right-2 top-2 bottom-2 px-3 rounded-md bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 text-white text-xs font-semibold flex items-center gap-1 shadow-xs transition-colors cursor-pointer"
+              className="absolute right-2 top-2.5 bottom-2.5 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 text-white text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
             >
               <span>Send</span>
               <Send className="w-3.5 h-3.5" />
             </button>
           </form>
-          <div className="flex items-center justify-between mt-1 text-[10px] text-slate-400">
+          <div className="flex items-center justify-between mt-2 px-1 text-[11px] text-slate-400">
             <span>Press Enter to send • Shift+Enter for newline</span>
             <span className="font-mono">Google GenAI Client</span>
           </div>
@@ -250,29 +251,29 @@ export const DesktopDashboardView: React.FC<DesktopDashboardViewProps> = ({
       </section>
 
       {/* ======================================================================== */}
-      {/* RIGHT PANEL: DYNAMIC DATA CARDS, TRUST SCORES, & README TEMPLATES */}
+      {/* RIGHT PANEL: DYNAMIC DATA CARDS, TRUST SCORES, & README TEMPLATES        */}
       {/* ======================================================================== */}
       <section className="flex-1 flex flex-col h-full overflow-hidden bg-slate-50">
         
-        {/* Right Panel Header */}
-        <div className="bg-white border-b border-slate-200 px-6 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
+        {/* Right Panel Header with Spacious Padding & Tabs */}
+        <div className="bg-white border-b border-slate-200 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shrink-0">
           <div>
             <h1 className="text-sm font-bold text-[#0F172A] tracking-tight">
-              Active Research Data Grid & Governance Suite
+              Active Research Data Grid & Governance
             </h1>
-            <p className="text-xs text-slate-500">
-              {projectName} • {savedDatasets.length} Curated Datasets with structured Trust Scores.
+            <p className="text-xs text-slate-500 mt-0.5">
+              Curated repository records, calculated Trust Scores, and auto-generated data dictionaries.
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
-            {/* View Tabs Switcher */}
-            <div className="inline-flex p-1 rounded-lg bg-slate-100 border border-slate-200 text-xs">
+          <div className="flex items-center gap-3">
+            {/* View Tabs Switcher with Spacious Padding */}
+            <div className="inline-flex p-1.5 rounded-xl bg-slate-100 border border-slate-200 text-xs gap-1.5">
               <button
                 onClick={() => setRightTab('cards')}
-                className={`px-3 py-1 rounded-md font-semibold transition-all cursor-pointer ${
+                className={`px-4 py-2 rounded-lg font-semibold transition-all cursor-pointer ${
                   rightTab === 'cards'
-                    ? 'bg-white text-blue-600 shadow-xs'
+                    ? 'bg-white text-blue-600 shadow-sm'
                     : 'text-slate-600 hover:text-[#0F172A]'
                 }`}
               >
@@ -280,55 +281,55 @@ export const DesktopDashboardView: React.FC<DesktopDashboardViewProps> = ({
               </button>
               <button
                 onClick={() => setRightTab('table')}
-                className={`px-3 py-1 rounded-md font-semibold transition-all cursor-pointer ${
+                className={`px-4 py-2 rounded-lg font-semibold transition-all cursor-pointer ${
                   rightTab === 'table'
-                    ? 'bg-white text-blue-600 shadow-xs'
+                    ? 'bg-white text-blue-600 shadow-sm'
                     : 'text-slate-600 hover:text-[#0F172A]'
                 }`}
               >
-                Data Dictionary Table
+                Data Dictionary
               </button>
               <button
                 onClick={() => setRightTab('readme')}
-                className={`px-3 py-1 rounded-md font-semibold transition-all cursor-pointer ${
+                className={`px-4 py-2 rounded-lg font-semibold transition-all cursor-pointer ${
                   rightTab === 'readme'
-                    ? 'bg-white text-blue-600 shadow-xs'
+                    ? 'bg-white text-blue-600 shadow-sm'
                     : 'text-slate-600 hover:text-[#0F172A]'
                 }`}
               >
-                README.md Template
+                README.md
               </button>
             </div>
 
-            {/* Single-File HTML Download / View button */}
+            {/* Standalone HTML view link */}
             <button
               onClick={downloadStandaloneHtml}
-              className="text-xs px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-[#0F172A] font-semibold flex items-center gap-1 transition-colors cursor-pointer"
+              className="text-xs px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#0F172A] font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
               title="Open or download single-file HTML dashboard"
             >
               <ExternalLink className="w-3.5 h-3.5 text-blue-600" />
-              <span>Standalone HTML</span>
+              <span className="hidden sm:inline">Single-File HTML</span>
             </button>
           </div>
         </div>
 
-        {/* Right Panel Scrollable Content */}
+        {/* Right Panel Scrollable Content with Generous Padding */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
 
           {/* VIEW 1: DATASET CARDS */}
           {rightTab === 'cards' && (
             <div className="space-y-4">
-              <div className="flex items-center justify-between text-xs">
+              <div className="flex items-center justify-between text-xs px-1">
                 <span className="font-bold text-slate-400 uppercase tracking-wider text-[11px]">
-                  Curated Repositories ({filteredDatasets.length} Active)
+                  Curated Repositories ({filteredDatasets.length})
                 </span>
                 <div className="flex items-center gap-2">
-                  <span className="text-slate-500 text-xs">Filter Trust:</span>
+                  <span className="text-slate-500 text-xs">Trust Filter:</span>
                   <button
                     onClick={() => setFilterTrust('all')}
-                    className={`px-2 py-0.5 rounded text-xs font-semibold cursor-pointer ${
+                    className={`px-3 py-1 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
                       filterTrust === 'all'
-                        ? 'bg-blue-50 text-blue-600 border border-blue-200'
+                        ? 'bg-blue-600 text-white shadow-xs'
                         : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
                     }`}
                   >
@@ -336,9 +337,9 @@ export const DesktopDashboardView: React.FC<DesktopDashboardViewProps> = ({
                   </button>
                   <button
                     onClick={() => setFilterTrust('high')}
-                    className={`px-2 py-0.5 rounded text-xs font-semibold cursor-pointer ${
+                    className={`px-3 py-1 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
                       filterTrust === 'high'
-                        ? 'bg-blue-50 text-blue-600 border border-blue-200'
+                        ? 'bg-blue-600 text-white shadow-xs'
                         : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
                     }`}
                   >
@@ -346,9 +347,9 @@ export const DesktopDashboardView: React.FC<DesktopDashboardViewProps> = ({
                   </button>
                   <button
                     onClick={() => setFilterTrust('med')}
-                    className={`px-2 py-0.5 rounded text-xs font-semibold cursor-pointer ${
+                    className={`px-3 py-1 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
                       filterTrust === 'med'
-                        ? 'bg-blue-50 text-blue-600 border border-blue-200'
+                        ? 'bg-blue-600 text-white shadow-xs'
                         : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
                     }`}
                   >
@@ -357,29 +358,31 @@ export const DesktopDashboardView: React.FC<DesktopDashboardViewProps> = ({
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
                 {filteredDatasets.map((ds) => {
                   const isHigh = ds.trustScore === 'High';
                   return (
                     <div
                       key={ds.id}
-                      className="bg-white rounded-xl border border-slate-200 hover:border-blue-400 p-5 shadow-xs space-y-3 transition-all"
+                      className="bg-white rounded-xl border border-slate-200 hover:border-blue-400 p-6 shadow-xs space-y-4 transition-all"
                     >
                       <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <div className="flex items-center gap-1.5 mb-1 flex-wrap">
-                            <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-800 text-[10px] font-bold font-mono border border-slate-200">
+                        <div className="space-y-1.5">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-800 text-[10px] font-bold font-mono border border-slate-200">
                               {ds.repository}
                             </span>
-                            <span className="px-1.5 py-0.2 rounded bg-blue-50 text-blue-700 text-[10px] font-mono border border-blue-200">
+                            <span className="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 text-[10px] font-mono border border-blue-200">
                               {ds.license}
                             </span>
                           </div>
-                          <h3 className="text-sm font-bold text-[#0F172A]">{ds.title}</h3>
+                          <h3 className="text-sm font-bold text-[#0F172A] leading-snug">
+                            {ds.title}
+                          </h3>
                         </div>
 
                         <div
-                          className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold shrink-0 border ${
+                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold shrink-0 border ${
                             isHigh
                               ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                               : 'bg-amber-50 text-amber-800 border-amber-200'
@@ -399,24 +402,27 @@ export const DesktopDashboardView: React.FC<DesktopDashboardViewProps> = ({
                       <p className="text-xs text-slate-600 leading-relaxed">{ds.description}</p>
 
                       {ds.audit && (
-                        <div className="p-2.5 rounded-lg bg-blue-50/60 border border-blue-100 text-[11px] text-slate-800">
+                        <div className="p-3 rounded-lg bg-blue-50/60 border border-blue-100 text-xs text-slate-800">
                           <span className="font-bold text-blue-700">Audit Verdict: </span>
                           <span>{ds.audit.verdictHeadline}</span>
                         </div>
                       )}
 
                       {ds.pythonSnippet && (
-                        <div className="space-y-1">
+                        <div className="space-y-1.5 pt-1">
                           <div className="flex items-center justify-between text-[11px] font-mono text-slate-500">
-                            <span>Python Acquisition:</span>
+                            <span className="flex items-center gap-1">
+                              <Terminal className="w-3 h-3 text-blue-600" />
+                              Python Acquisition:
+                            </span>
                             <button
                               onClick={() => handleCopyCode(ds.id, ds.pythonSnippet!)}
-                              className="text-blue-600 hover:underline cursor-pointer"
+                              className="text-blue-600 hover:underline cursor-pointer font-semibold"
                             >
                               {copiedSnippetId === ds.id ? 'Copied!' : 'Copy'}
                             </button>
                           </div>
-                          <pre className="p-2.5 rounded-lg bg-[#0F172A] text-slate-200 text-[11px] font-mono overflow-x-auto leading-relaxed max-h-32">
+                          <pre className="p-3.5 rounded-xl bg-[#0F172A] text-slate-200 text-xs font-mono overflow-x-auto leading-relaxed max-h-36">
                             {ds.pythonSnippet}
                           </pre>
                         </div>
@@ -428,82 +434,82 @@ export const DesktopDashboardView: React.FC<DesktopDashboardViewProps> = ({
             </div>
           )}
 
-          {/* VIEW 2: MODERN ROUNDED TABLES */}
+          {/* VIEW 2: DATA DICTIONARY TABLE WITH GENEROUS CELL PADDING */}
           {rightTab === 'table' && (
-            <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-4">
+            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-5">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-xs font-bold uppercase tracking-wider text-[#0F172A]">
                     Structured Data Dictionary Catalog
                   </h3>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-slate-500 mt-0.5">
                     Standardized column specifications, scientific data types, and nullability policies.
                   </p>
                 </div>
               </div>
 
-              <div className="overflow-x-auto border border-slate-200 rounded-lg">
+              <div className="overflow-x-auto border border-slate-200 rounded-xl">
                 <table className="w-full text-left text-xs border-collapse">
                   <thead className="bg-slate-50 border-b border-slate-200 text-[#0F172A]">
                     <tr>
-                      <th className="p-3 font-bold">Column Name</th>
-                      <th className="p-3 font-bold w-28">Data Type</th>
-                      <th className="p-3 font-bold">Scientific Definition</th>
-                      <th className="p-3 font-bold w-32">Allowable Range</th>
-                      <th className="p-3 font-bold w-32">Missing Policy</th>
-                      <th className="p-3 font-bold w-24">Example</th>
+                      <th className="p-3.5 font-bold">Column Name</th>
+                      <th className="p-3.5 font-bold w-32">Data Type</th>
+                      <th className="p-3.5 font-bold">Scientific Definition</th>
+                      <th className="p-3.5 font-bold w-36">Allowable Range</th>
+                      <th className="p-3.5 font-bold w-36">Missing Policy</th>
+                      <th className="p-3.5 font-bold w-28">Example</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 text-slate-700">
                     <tr className="hover:bg-slate-50/70 transition-colors">
-                      <td className="p-3 font-mono font-semibold text-blue-600">station_id</td>
-                      <td className="p-3 font-mono">
-                        <span className="px-1.5 py-0.5 rounded bg-slate-100 text-slate-700">String</span>
+                      <td className="p-3.5 font-mono font-semibold text-blue-600">station_id</td>
+                      <td className="p-3.5 font-mono">
+                        <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-semibold">String</span>
                       </td>
-                      <td className="p-3">Official EEA regulatory monitoring station alphanumeric code.</td>
-                      <td className="p-3 font-mono text-[11px]">ISO Country + 5-digit</td>
-                      <td className="p-3 font-mono text-[11px]">NOT NULL</td>
-                      <td className="p-3 font-mono text-slate-500">"DE_BER_001"</td>
+                      <td className="p-3.5">Official EEA regulatory monitoring station alphanumeric code.</td>
+                      <td className="p-3.5 font-mono text-[11px]">ISO Country + 5-digit</td>
+                      <td className="p-3.5 font-mono text-[11px]">NOT NULL</td>
+                      <td className="p-3.5 font-mono text-slate-500">"DE_BER_001"</td>
                     </tr>
                     <tr className="hover:bg-slate-50/70 transition-colors">
-                      <td className="p-3 font-mono font-semibold text-blue-600">timestamp_utc</td>
-                      <td className="p-3 font-mono">
-                        <span className="px-1.5 py-0.5 rounded bg-slate-100 text-slate-700">Datetime</span>
+                      <td className="p-3.5 font-mono font-semibold text-blue-600">timestamp_utc</td>
+                      <td className="p-3.5 font-mono">
+                        <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-semibold">Datetime</span>
                       </td>
-                      <td className="p-3">UTC observation hour timestamp formatted in ISO-8601 standard.</td>
-                      <td className="p-3 font-mono text-[11px]">2018-01-01 to 2023-12-31</td>
-                      <td className="p-3 font-mono text-[11px]">NOT NULL</td>
-                      <td className="p-3 font-mono text-slate-500">"2023-04-12T14:00Z"</td>
+                      <td className="p-3.5">UTC observation hour timestamp formatted in ISO-8601 standard.</td>
+                      <td className="p-3.5 font-mono text-[11px]">2018-01-01 to 2023-12-31</td>
+                      <td className="p-3.5 font-mono text-[11px]">NOT NULL</td>
+                      <td className="p-3.5 font-mono text-slate-500">"2023-04-12T14:00Z"</td>
                     </tr>
                     <tr className="hover:bg-slate-50/70 transition-colors">
-                      <td className="p-3 font-mono font-semibold text-blue-600">pm25_ugm3</td>
-                      <td className="p-3 font-mono">
-                        <span className="px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 font-semibold">Float64</span>
+                      <td className="p-3.5 font-mono font-semibold text-blue-600">pm25_ugm3</td>
+                      <td className="p-3.5 font-mono">
+                        <span className="px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-semibold">Float64</span>
                       </td>
-                      <td className="p-3">Calibrated particulate matter diameter &lt; 2.5 µm concentration in µg/m³.</td>
-                      <td className="p-3 font-mono text-[11px]">0.0 - 500.0 µg/m³</td>
-                      <td className="p-3 font-mono text-[11px]">Flagged NA (drift)</td>
-                      <td className="p-3 font-mono text-slate-500">14.8</td>
+                      <td className="p-3.5">Calibrated particulate matter diameter &lt; 2.5 µm concentration in µg/m³.</td>
+                      <td className="p-3.5 font-mono text-[11px]">0.0 - 500.0 µg/m³</td>
+                      <td className="p-3.5 font-mono text-[11px]">Flagged NA (drift)</td>
+                      <td className="p-3.5 font-mono text-slate-500">14.8</td>
                     </tr>
                     <tr className="hover:bg-slate-50/70 transition-colors">
-                      <td className="p-3 font-mono font-semibold text-blue-600">pm10_ugm3</td>
-                      <td className="p-3 font-mono">
-                        <span className="px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 font-semibold">Float64</span>
+                      <td className="p-3.5 font-mono font-semibold text-blue-600">pm10_ugm3</td>
+                      <td className="p-3.5 font-mono">
+                        <span className="px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-semibold">Float64</span>
                       </td>
-                      <td className="p-3">Calibrated particulate matter diameter &lt; 10 µm concentration in µg/m³.</td>
-                      <td className="p-3 font-mono text-[11px]">0.0 - 1000.0 µg/m³</td>
-                      <td className="p-3 font-mono text-[11px]">Flagged NA</td>
-                      <td className="p-3 font-mono text-slate-500">28.4</td>
+                      <td className="p-3.5">Calibrated particulate matter diameter &lt; 10 µm concentration in µg/m³.</td>
+                      <td className="p-3.5 font-mono text-[11px]">0.0 - 1000.0 µg/m³</td>
+                      <td className="p-3.5 font-mono text-[11px]">Flagged NA</td>
+                      <td className="p-3.5 font-mono text-slate-500">28.4</td>
                     </tr>
                     <tr className="hover:bg-slate-50/70 transition-colors">
-                      <td className="p-3 font-mono font-semibold text-blue-600">qc_flag</td>
-                      <td className="p-3 font-mono">
-                        <span className="px-1.5 py-0.5 rounded bg-slate-100 text-slate-700">Categorical</span>
+                      <td className="p-3.5 font-mono font-semibold text-blue-600">qc_flag</td>
+                      <td className="p-3.5 font-mono">
+                        <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-semibold">Categorical</span>
                       </td>
-                      <td className="p-3">Automated sensor quality assurance validation status code.</td>
-                      <td className="p-3 font-mono text-[11px]">VALID, ESTIMATED, SUSPECT</td>
-                      <td className="p-3 font-mono text-[11px]">NOT NULL</td>
-                      <td className="p-3 font-mono text-slate-500">"VALID"</td>
+                      <td className="p-3.5">Automated sensor quality assurance validation status code.</td>
+                      <td className="p-3.5 font-mono text-[11px]">VALID, SUSPECT</td>
+                      <td className="p-3.5 font-mono text-[11px]">NOT NULL</td>
+                      <td className="p-3.5 font-mono text-slate-500">"VALID"</td>
                     </tr>
                   </tbody>
                 </table>
@@ -513,30 +519,42 @@ export const DesktopDashboardView: React.FC<DesktopDashboardViewProps> = ({
 
           {/* VIEW 3: README.MD TEMPLATE */}
           {rightTab === 'readme' && (
-            <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                 <div>
                   <h3 className="text-xs font-bold uppercase tracking-wider text-[#0F172A]">
                     Publication-Grade README.md Template
                   </h3>
-                  <p className="text-xs text-slate-500">
-                    Auto-generated according to Open Science Framework (OSF) research governance standards.
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Open Science Framework (OSF) research governance standards.
                   </p>
                 </div>
                 <button
                   onClick={() => {
-                    const text = `# ${projectName}\n\n## 1. Project Abstract\nCurated open datasets evaluated for empirical modeling.\n\n## 2. Provenance Manifest\n- Repositories: Zenodo (DOI), Data.gov, Hugging Face\n- Governance: CC-BY 4.0 compliant\n\n## 3. Directory Layout\n├── data/raw/\n├── data/processed/\n└── scripts/`;
+                    const text = `# ${projectName}\n\n## 1. Abstract\nCurated research datasets cataloged for empirical modeling.\n\n## 2. Provenance Manifest\n- Repositories: Zenodo (DOI), Data.gov, Hugging Face\n- Licensing: CC-BY 4.0 compliant\n\n## 3. Directory Layout\n├── data/raw/\n├── data/processed/\n└── scripts/`;
                     navigator.clipboard.writeText(text);
+                    setCopiedReadme(true);
+                    setTimeout(() => setCopiedReadme(false), 2000);
                   }}
-                  className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer flex items-center gap-1.5"
                 >
-                  Copy Markdown
+                  {copiedReadme ? (
+                    <>
+                      <Check className="w-3.5 h-3.5" />
+                      <span>Copied</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Copy Markdown</span>
+                    </>
+                  )}
                 </button>
               </div>
 
-              <pre className="p-5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-mono text-slate-800 leading-relaxed overflow-x-auto whitespace-pre-wrap"># {projectName}
+              <pre className="p-5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono text-slate-800 leading-relaxed overflow-x-auto whitespace-pre-wrap"># {projectName}
 
-## 1. Project Abstract & Scientific Objective
+## 1. Project Abstract & Objective
 Curated dataset catalog for empirical modeling, statistical cross-validation, and reproducibility benchmarking.
 
 ## 2. Curated Datasets Manifest
@@ -552,7 +570,7 @@ Curated dataset catalog for empirical modeling, statistical cross-validation, an
 └── scripts/                 # Python and Pandas acquisition routines
 ```
 
-## 4. Academic Citation Notice
+## 4. Citation Notice
 Please cite data sources using their respective permanent DOIs and repository citations as cataloged in this dossier.</pre>
             </div>
           )}

@@ -138,6 +138,7 @@ export default function App() {
   });
 
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   // Targets passed across workflows
   const [auditTarget, setAuditTarget] = useState<{
@@ -231,6 +232,8 @@ export default function App() {
         onOpenExport={() => setIsExportModalOpen(true)}
         activeProjectName={activeProjectName}
         onChangeProjectName={setActiveProjectName}
+        isSidebarCollapsed={isSidebarCollapsed}
+        onToggleSidebar={() => setIsSidebarCollapsed((prev) => !prev)}
       />
 
       {/* Main Workspace Body with Sidebar Rail */}
@@ -240,6 +243,8 @@ export default function App() {
           currentSection={currentSection}
           onSelectSection={setCurrentSection}
           savedCount={savedDatasets.length}
+          isCollapsed={isSidebarCollapsed}
+          onToggleCollapse={() => setIsSidebarCollapsed((prev) => !prev)}
         />
 
         {/* Dynamic Workflow Workspace Content */}

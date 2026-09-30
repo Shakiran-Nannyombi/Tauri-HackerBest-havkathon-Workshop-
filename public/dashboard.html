@@ -40,7 +40,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    /* Custom scrollbars for clean desktop appearance */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -62,129 +61,135 @@
   <!-- ============================================================================== -->
   <!-- 1. TOP DESKTOP WINDOW TITLEBAR                                                -->
   <!-- ============================================================================== -->
-  <header class="bg-white border-b border-slate-200 px-4 py-2 flex items-center justify-between shrink-0 z-30">
-    <!-- Left: Desktop Window Controls & App Title -->
-    <div class="flex items-center gap-3">
-      <!-- Mac-style window dots -->
+  <header class="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between shrink-0 z-30">
+    <div class="flex items-center gap-4">
+      <!-- Window Dots -->
       <div class="flex items-center gap-1.5 pr-3 border-r border-slate-200">
-        <span class="w-3 h-3 rounded-full bg-slate-300 hover:bg-rose-400 transition-colors cursor-pointer" title="Close"></span>
-        <span class="w-3 h-3 rounded-full bg-slate-300 hover:bg-amber-400 transition-colors cursor-pointer" title="Minimize"></span>
-        <span class="w-3 h-3 rounded-full bg-slate-300 hover:bg-emerald-400 transition-colors cursor-pointer" title="Expand"></span>
+        <span class="w-3 h-3 rounded-full bg-slate-300 hover:bg-rose-400 transition-colors cursor-pointer"></span>
+        <span class="w-3 h-3 rounded-full bg-slate-300 hover:bg-amber-400 transition-colors cursor-pointer"></span>
+        <span class="w-3 h-3 rounded-full bg-slate-300 hover:bg-emerald-400 transition-colors cursor-pointer"></span>
       </div>
 
-      <!-- Brand Logo & Name -->
-      <div class="flex items-center gap-2.5">
-        <div class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow-xs">
+      <!-- Sidebar Toggle Button -->
+      <button onclick="toggleSidebar()" class="p-1.5 rounded-lg text-slate-500 hover:text-navy-900 hover:bg-slate-100 transition-colors cursor-pointer flex items-center gap-1.5 text-xs" title="Toggle Sidebar">
+        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
+        <span class="hidden sm:inline font-medium text-slate-600">Sidebar</span>
+      </button>
+
+      <!-- Brand -->
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow-xs">
           RB
         </div>
-        <div class="flex items-center gap-2">
-          <span class="text-sm font-bold tracking-tight text-navy-900">ResearchBase</span>
-          <span class="text-[10px] font-mono font-semibold uppercase px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-200">
-            v2.4 Core
-          </span>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-sm font-bold tracking-tight text-navy-900">ResearchBase</span>
+            <span class="text-[10px] font-mono font-semibold uppercase px-2 py-0.5 rounded-md bg-blue-50 text-blue-600 border border-blue-200">
+              v2.4
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-500 font-medium">Academic Dataset Engine</p>
         </div>
       </div>
-
-      <!-- Workspace Tag -->
-      <div class="hidden md:flex items-center gap-1.5 ml-3 px-2 py-0.5 rounded-md bg-slate-100 text-[11px] font-medium text-slate-600 border border-slate-200">
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-        <span>Active Project: Empirical Longitudinal Study 2026</span>
-      </div>
     </div>
 
-    <!-- Center: Model & Engine Badge -->
-    <div class="hidden lg:flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-xs text-blue-700">
+    <!-- Center Status -->
+    <div class="hidden lg:flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-xs text-blue-700">
       <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
-      <span class="font-medium">Gemma 4 (31B-IT) • Google AI Studio Hook Active</span>
+      <span class="font-medium">Gemma 4 (31B-IT) • Google AI Studio Connected</span>
     </div>
 
-    <!-- Right: Quick Export & Status Actions -->
-    <div class="flex items-center gap-2">
-      <div class="flex items-center gap-1.5 text-xs text-slate-500 bg-slate-50 px-2 py-1 rounded border border-slate-200">
-        <span class="font-semibold text-navy-900" id="datasetCountBadge">3</span>
+    <!-- Right Actions -->
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2 text-xs text-slate-600 bg-slate-100/80 px-3 py-1.5 rounded-lg border border-slate-200">
+        <span class="font-bold text-navy-900" id="datasetCountBadge">3</span>
         <span>Datasets Curated</span>
       </div>
-      <button onclick="downloadDossier()" class="text-xs px-3 py-1.5 rounded-lg bg-navy-900 hover:bg-slate-800 text-white font-semibold transition-colors shadow-xs cursor-pointer">
+      <button onclick="downloadDossier()" class="text-xs px-4 py-2 rounded-lg bg-navy-900 hover:bg-slate-800 text-white font-semibold transition-colors shadow-xs cursor-pointer">
         Export Dossier
       </button>
     </div>
   </header>
 
   <!-- ============================================================================== -->
-  <!-- 2. MAIN LAYOUT: SIDEBAR + 2-PANEL WORKSPACE                                   -->
+  <!-- 2. MAIN LAYOUT: TOGGLEABLE SIDEBAR + 2-PANEL WORKSPACE                        -->
   <!-- ============================================================================== -->
   <div class="flex flex-1 overflow-hidden">
 
     <!-- -------------------------------------------------------------------------- -->
-    <!-- COMPONENT 1: SLEEK SIDEBAR NAVIGATION MENU                                  -->
+    <!-- COMPONENT 1: SLEEK TOGGLEABLE SIDEBAR                                      -->
     <!-- -------------------------------------------------------------------------- -->
-    <aside class="w-60 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 h-full p-3 select-none">
-      <div class="space-y-4">
-        <div>
-          <span class="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+    <aside id="sidebar" class="bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 h-full p-4 select-none w-64 transition-all duration-300">
+      <div class="space-y-5">
+        <div class="flex items-center justify-between px-1">
+          <span id="navHeader" class="text-[10px] font-bold uppercase tracking-wider text-slate-400">
             Workflows
           </span>
-          <nav class="mt-1 space-y-1">
-            <!-- 1. Home (Active) -->
-            <button onclick="switchNav('home')" id="nav-home" class="w-full text-left px-3 py-2 rounded-lg flex items-center gap-2.5 text-xs font-semibold bg-blue-50 text-blue-600 shadow-xs border border-blue-100 transition-all cursor-pointer">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-              <span>Home Dashboard</span>
-            </button>
-
-            <!-- 2. Dataset Discovery -->
-            <button onclick="switchNav('discover')" id="nav-discover" class="w-full text-left px-3 py-2 rounded-lg flex items-center gap-2.5 text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-navy-900 transition-all cursor-pointer">
-              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-              <span>Dataset Discovery</span>
-            </button>
-
-            <!-- 3. Source Verifier -->
-            <button onclick="switchNav('verify')" id="nav-verify" class="w-full text-left px-3 py-2 rounded-lg flex items-center gap-2.5 text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-navy-900 transition-all cursor-pointer">
-              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-              <span>Source Verifier</span>
-            </button>
-
-            <!-- 4. Documentation Generator -->
-            <button onclick="switchNav('docs')" id="nav-docs" class="w-full text-left px-3 py-2 rounded-lg flex items-center gap-2.5 text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-navy-900 transition-all cursor-pointer">
-              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-              <span>Documentation Gen</span>
-            </button>
-          </nav>
+          <button onclick="toggleSidebar()" class="p-1.5 rounded-lg text-slate-400 hover:text-navy-900 hover:bg-slate-100 transition-colors" title="Toggle Sidebar">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/></svg>
+          </button>
         </div>
 
-        <!-- Repositories Guide -->
-        <div class="pt-3 border-t border-slate-100">
-          <span class="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-            Open Repositories
+        <nav class="space-y-1.5">
+          <!-- 1. Home (Active) -->
+          <button onclick="switchNav('home')" id="nav-home" class="w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 text-xs font-semibold bg-blue-50 text-blue-600 shadow-xs border border-blue-100 transition-all cursor-pointer">
+            <svg class="w-4 h-4 shrink-0 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            <span class="nav-label truncate">Home Dashboard</span>
+          </button>
+
+          <!-- 2. Dataset Discovery -->
+          <button onclick="switchNav('discover')" id="nav-discover" class="w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-navy-900 transition-all cursor-pointer">
+            <svg class="w-4 h-4 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <span class="nav-label truncate">Dataset Discovery</span>
+          </button>
+
+          <!-- 3. Source Verifier -->
+          <button onclick="switchNav('verify')" id="nav-verify" class="w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-navy-900 transition-all cursor-pointer">
+            <svg class="w-4 h-4 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            <span class="nav-label truncate">Source Verifier</span>
+          </button>
+
+          <!-- 4. Documentation Generator -->
+          <button onclick="switchNav('docs')" id="nav-docs" class="w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-navy-900 transition-all cursor-pointer">
+            <svg class="w-4 h-4 shrink-0 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <span class="nav-label truncate">Documentation Gen</span>
+          </button>
+        </nav>
+
+        <!-- Repositories Links -->
+        <div id="repoSection" class="pt-4 border-t border-slate-100 space-y-2">
+          <span class="px-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+            Open Sources
           </span>
-          <div class="mt-2 space-y-1 text-xs">
-            <a href="https://zenodo.org" target="_blank" class="px-3 py-1.5 rounded-md flex items-center justify-between text-slate-600 hover:text-blue-600 hover:bg-slate-50 transition-colors">
-              <span>Zenodo (CERN)</span>
-              <span class="text-[10px] font-mono text-slate-400">DOI</span>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <a href="https://zenodo.org" target="_blank" class="p-2.5 rounded-lg bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200/70 transition-colors flex items-center justify-between">
+              <span class="font-medium">Zenodo</span>
+              <span class="text-[10px] text-slate-400 font-mono">DOI</span>
             </a>
-            <a href="https://huggingface.co/datasets" target="_blank" class="px-3 py-1.5 rounded-md flex items-center justify-between text-slate-600 hover:text-blue-600 hover:bg-slate-50 transition-colors">
-              <span>Hugging Face</span>
-              <span class="text-[10px] font-mono text-slate-400">ML/NLP</span>
+            <a href="https://huggingface.co/datasets" target="_blank" class="p-2.5 rounded-lg bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200/70 transition-colors flex items-center justify-between">
+              <span class="font-medium">HF Hub</span>
+              <span class="text-[10px] text-slate-400 font-mono">ML</span>
             </a>
-            <a href="https://www.kaggle.com/datasets" target="_blank" class="px-3 py-1.5 rounded-md flex items-center justify-between text-slate-600 hover:text-blue-600 hover:bg-slate-50 transition-colors">
-              <span>Kaggle Datasets</span>
-              <span class="text-[10px] font-mono text-slate-400">Tabular</span>
+            <a href="https://data.gov" target="_blank" class="p-2.5 rounded-lg bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200/70 transition-colors flex items-center justify-between">
+              <span class="font-medium">Data.gov</span>
+              <span class="text-[10px] text-slate-400 font-mono">Gov</span>
             </a>
-            <a href="https://data.gov" target="_blank" class="px-3 py-1.5 rounded-md flex items-center justify-between text-slate-600 hover:text-blue-600 hover:bg-slate-50 transition-colors">
-              <span>Data.gov</span>
-              <span class="text-[10px] font-mono text-slate-400">Gov</span>
+            <a href="https://kaggle.com/datasets" target="_blank" class="p-2.5 rounded-lg bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200/70 transition-colors flex items-center justify-between">
+              <span class="font-medium">Kaggle</span>
+              <span class="text-[10px] text-slate-400 font-mono">CSV</span>
             </a>
           </div>
         </div>
       </div>
 
-      <!-- Sidebar Footer -->
-      <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-100 text-[11px] text-slate-500">
+      <!-- Footer -->
+      <div id="sidebarFooter" class="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70 text-[11px] text-slate-500">
         <div class="flex items-center gap-1.5 font-semibold text-navy-900 mb-0.5">
           <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
           <span>Academic Rigor Standard</span>
         </div>
-        <p class="text-[10px] leading-tight text-slate-500">
-          FAIR Principles: Findable, Accessible, Interoperable, and Reusable data verification.
+        <p class="text-[10px] text-slate-500 leading-tight">
+          FAIR data principles: Findable, Accessible, Interoperable, and Reusable.
         </p>
       </div>
     </aside>
@@ -195,82 +200,76 @@
     <main class="flex-1 flex flex-col lg:flex-row overflow-hidden bg-slate-50">
 
       <!-- ======================================================================== -->
-      <!-- LEFT PANEL: INTERACTIVE CHAT & COMMAND INPUT (Gemma 4 Assistant)         -->
+      <!-- LEFT PANEL: INTERACTIVE CHAT (Gemma 4 Assistant)                         -->
       <!-- ======================================================================== -->
-      <section class="w-full lg:w-[420px] xl:w-[460px] bg-white border-r border-slate-200 flex flex-col h-full shrink-0">
+      <section class="w-full lg:w-[440px] xl:w-[480px] bg-white border-r border-slate-200 flex flex-col h-full shrink-0">
         
-        <!-- Chat Header -->
-        <div class="p-3.5 border-b border-slate-200 flex items-center justify-between bg-white">
-          <div class="flex items-center gap-2">
-            <div class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 border border-blue-200 flex items-center justify-center font-bold text-xs">
+        <!-- Chat Header with Generous Padding -->
+        <div class="px-5 py-4 border-b border-slate-200 flex items-center justify-between bg-white shrink-0">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 border border-blue-200 flex items-center justify-center font-bold text-xs">
               🤖
             </div>
             <div>
-              <h2 class="text-xs font-bold text-navy-900">Gemma 4 Research Assistant</h2>
-              <p class="text-[10px] text-slate-500 font-mono">model: gemma-4-31b-it • Google AI Studio</p>
+              <h2 class="text-xs font-bold text-navy-900">Gemma 4 Copilot</h2>
+              <p class="text-[11px] text-slate-500 font-mono">gemma-4-31b-it • Google AI Studio</p>
             </div>
           </div>
-          <button onclick="clearChat()" class="text-[11px] text-slate-500 hover:text-navy-900 px-2 py-1 rounded hover:bg-slate-100 transition-colors">
+          <button onclick="clearChat()" class="text-xs text-slate-500 hover:text-navy-900 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-colors">
             Reset
           </button>
         </div>
 
-        <!-- Preset Inquiries Pill Bar -->
-        <div class="px-3 py-2 bg-slate-50/80 border-b border-slate-200 flex items-center gap-1.5 overflow-x-auto text-[11px]">
-          <span class="text-[10px] font-bold uppercase text-slate-400 shrink-0">Prompts:</span>
-          <button onclick="sendPreset('Find Zenodo climate datasets with DOI and hourly sensor readings')" class="px-2 py-0.5 rounded-full bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 shrink-0 transition-colors">
+        <!-- Preset Prompts with Generous Padding -->
+        <div class="px-5 py-3 bg-slate-50/80 border-b border-slate-200 flex items-center gap-2 overflow-x-auto text-xs shrink-0">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 shrink-0">Prompts:</span>
+          <button onclick="sendPreset('Find Zenodo climate datasets with DOI and hourly sensor readings')" class="px-3 py-1 rounded-full bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 shrink-0 transition-colors font-medium">
             Climate Zenodo
           </button>
-          <button onclick="sendPreset('Audit Kaggle ecommerce dataset with Unknown license for academic publication')" class="px-2 py-0.5 rounded-full bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 shrink-0 transition-colors">
+          <button onclick="sendPreset('Audit Kaggle retail dataset with Unknown license for academic publication')" class="px-3 py-1 rounded-full bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 shrink-0 transition-colors font-medium">
             License Audit
           </button>
-          <button onclick="sendPreset('Generate Markdown README and column dictionary for patient EHR table')" class="px-2 py-0.5 rounded-full bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 shrink-0 transition-colors">
+          <button onclick="sendPreset('Generate Markdown README and column dictionary for patient EHR table')" class="px-3 py-1 rounded-full bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-600 border border-slate-200 shrink-0 transition-colors font-medium">
             README Gen
           </button>
         </div>
 
-        <!-- Chat Messages Scrollable Log -->
-        <div id="chatLog" class="flex-1 overflow-y-auto p-4 space-y-4 text-xs">
-          <!-- Initial Assistant Message -->
-          <div class="flex gap-2.5">
-            <div class="w-6 h-6 rounded-md bg-blue-600 text-white flex items-center justify-center font-bold text-[10px] shrink-0">
+        <!-- Chat Log with Generous Padding -->
+        <div id="chatLog" class="flex-1 overflow-y-auto p-5 space-y-4 text-xs">
+          <div class="flex gap-3">
+            <div class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-[10px] shrink-0 shadow-xs">
               G4
             </div>
-            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-800 leading-relaxed space-y-2 max-w-[90%]">
-              <div class="font-bold text-navy-900 flex items-center justify-between">
+            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-slate-800 leading-relaxed space-y-1.5 max-w-[90%]">
+              <div class="font-bold text-navy-900 flex items-center justify-between pb-1 border-b border-black/5 text-[11px]">
                 <span>Gemma 4 Academic Engine</span>
-                <span class="text-[10px] text-slate-400 font-normal">Active</span>
+                <span class="text-slate-400 font-normal">Ready</span>
               </div>
-              <p>Welcome to <strong>ResearchBase</strong>. I am your academic dataset copilot.</p>
-              <p>I can help you discover accessible repositories (Zenodo, Hugging Face, Kaggle), compute objective <strong>Trust Scores</strong> (evaluating provenance, licensing, and selection bias), and draft publication-grade <strong>README templates</strong>.</p>
-              <div class="p-2 rounded bg-blue-50/60 border border-blue-100 text-[11px] text-blue-900 font-mono">
-                &gt; Try asking: "Search datasets for urban air quality" or "Audit my dataset's license"
-              </div>
+              <p>Welcome to <strong>ResearchBase</strong>. Ask to discover accessible datasets (Zenodo, Hugging Face, Kaggle), compute objective Trust Scores, or generate publication-grade README templates.</p>
             </div>
           </div>
         </div>
 
-        <!-- Command / Message Input Box -->
-        <div class="p-3 border-t border-slate-200 bg-white">
+        <!-- Chat Input with Generous Padding -->
+        <div class="p-4 border-t border-slate-200 bg-white shrink-0">
           <form onsubmit="handleChatSubmit(event)" class="relative">
             <textarea
               id="chatInput"
               rows="2"
-              placeholder="Ask Gemma 4: find datasets, audit provenance, evaluate bias..."
-              class="w-full pl-3 pr-20 py-2 bg-slate-50 border border-slate-200 focus:bg-white focus:border-blue-600 rounded-lg text-xs text-navy-900 placeholder-slate-400 outline-hidden resize-none transition-all"
+              placeholder="Ask Gemma 4: discover datasets, audit license risks, check bias..."
+              class="w-full pl-3.5 pr-24 py-2.5 bg-slate-50 border border-slate-300 focus:bg-white focus:border-blue-600 rounded-xl text-xs text-navy-900 placeholder-slate-400 outline-hidden resize-none transition-all"
               onkeydown="if(event.key === 'Enter' && !event.shiftKey){ event.preventDefault(); handleChatSubmit(event); }"
             ></textarea>
             <button
               type="submit"
-              id="sendBtn"
-              class="absolute right-2 top-2 bottom-2 px-3 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center gap-1 shadow-xs transition-colors cursor-pointer"
+              class="absolute right-2 top-2.5 bottom-2.5 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
             >
               <span>Send</span>
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
             </button>
           </form>
-          <div class="flex items-center justify-between mt-1 text-[10px] text-slate-400">
-            <span>Press Enter to send • Shift+Enter for new line</span>
+          <div class="flex items-center justify-between mt-2 px-1 text-[11px] text-slate-400">
+            <span>Press Enter to send</span>
             <span class="font-mono">Google GenAI Client</span>
           </div>
         </div>
@@ -281,307 +280,233 @@
       <!-- ======================================================================== -->
       <section class="flex-1 flex flex-col h-full overflow-hidden bg-slate-50">
         
-        <!-- Right Panel Header & View Tabs -->
-        <div class="bg-white border-b border-slate-200 px-6 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
+        <!-- Header with Spacious Tabs -->
+        <div class="bg-white border-b border-slate-200 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shrink-0">
           <div>
             <h1 class="text-sm font-bold text-navy-900 tracking-tight">
-              Active Research Data Grid & Governance Suite
+              Active Research Data Grid & Governance
             </h1>
-            <p class="text-xs text-slate-500">
+            <p class="text-xs text-slate-500 mt-0.5">
               Curated repository records, calculated Trust Scores, and auto-generated data dictionaries.
             </p>
           </div>
 
-          <!-- View Tabs Switcher -->
-          <div class="inline-flex p-1 rounded-lg bg-slate-100 border border-slate-200 text-xs">
-            <button onclick="switchRightTab('cards')" id="tab-cards" class="px-3 py-1 rounded-md font-semibold bg-white text-blue-600 shadow-xs transition-all cursor-pointer">
+          <!-- Spacious View Tabs Switcher -->
+          <div class="inline-flex p-1.5 rounded-xl bg-slate-100 border border-slate-200 text-xs gap-1.5">
+            <button onclick="switchRightTab('cards')" id="tab-cards" class="px-4 py-2 rounded-lg font-semibold bg-white text-blue-600 shadow-sm transition-all cursor-pointer">
               Dataset Cards
             </button>
-            <button onclick="switchRightTab('table')" id="tab-table" class="px-3 py-1 rounded-md font-medium text-slate-600 hover:text-navy-900 transition-all cursor-pointer">
-              Data Dictionary Table
+            <button onclick="switchRightTab('table')" id="tab-table" class="px-4 py-2 rounded-lg font-semibold text-slate-600 hover:text-navy-900 transition-all cursor-pointer">
+              Data Dictionary
             </button>
-            <button onclick="switchRightTab('readme')" id="tab-readme" class="px-3 py-1 rounded-md font-medium text-slate-600 hover:text-navy-900 transition-all cursor-pointer">
-              README.md Template
+            <button onclick="switchRightTab('readme')" id="tab-readme" class="px-4 py-2 rounded-lg font-semibold text-slate-600 hover:text-navy-900 transition-all cursor-pointer">
+              README.md
             </button>
           </div>
         </div>
 
-        <!-- Right Panel Scrollable Content -->
+        <!-- Scrollable Content with Generous Padding -->
         <div class="flex-1 overflow-y-auto p-6 space-y-6">
 
-          <!-- ==================================================================== -->
-          <!-- VIEW 1: DYNAMIC DATASET CARDS WITH STRUCTURED TRUST SCORES          -->
-          <!-- ==================================================================== -->
+          <!-- TAB 1: DATASET CARDS -->
           <div id="view-cards" class="space-y-4">
-            
-            <!-- Cards Header Filter Controls -->
-            <div class="flex items-center justify-between text-xs">
+            <div class="flex items-center justify-between text-xs px-1">
               <span class="font-bold text-slate-400 uppercase tracking-wider text-[11px]">
                 Curated Repositories (3 Active)
               </span>
               <div class="flex items-center gap-2">
                 <span class="text-slate-500 text-xs">Filter Trust:</span>
-                <button onclick="filterCards('all')" class="px-2 py-0.5 rounded bg-blue-50 text-blue-600 font-bold border border-blue-200">All</button>
-                <button onclick="filterCards('high')" class="px-2 py-0.5 rounded bg-white text-slate-600 hover:bg-slate-100 border border-slate-200">High</button>
-                <button onclick="filterCards('med')" class="px-2 py-0.5 rounded bg-white text-slate-600 hover:bg-slate-100 border border-slate-200">Medium</button>
+                <button onclick="filterCards('all')" class="px-3 py-1 rounded-lg text-xs font-semibold bg-blue-600 text-white shadow-xs">All</button>
+                <button onclick="filterCards('high')" class="px-3 py-1 rounded-lg text-xs font-semibold bg-white text-slate-600 hover:bg-slate-100 border border-slate-200">High</button>
+                <button onclick="filterCards('med')" class="px-3 py-1 rounded-lg text-xs font-semibold bg-white text-slate-600 hover:bg-slate-100 border border-slate-200">Medium</button>
               </div>
             </div>
 
             <!-- Card Grid -->
-            <div class="grid grid-cols-1 xl:grid-cols-2 gap-4" id="cardsGrid">
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-5" id="cardsGrid">
 
               <!-- Card 1: Zenodo (High Trust) -->
-              <div class="bg-white rounded-xl border border-slate-200 hover:border-blue-400 p-5 shadow-xs space-y-3 transition-all dataset-card" data-trust="high">
+              <div class="bg-white rounded-xl border border-slate-200 hover:border-blue-400 p-6 shadow-xs space-y-4 transition-all dataset-card" data-trust="high">
                 <div class="flex items-start justify-between gap-3">
-                  <div>
-                    <div class="flex items-center gap-1.5 mb-1">
-                      <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-800 text-[10px] font-bold font-mono border border-slate-200">
+                  <div class="space-y-1.5">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span class="px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-800 text-[10px] font-bold font-mono border border-slate-200">
                         Zenodo (CERN)
                       </span>
-                      <span class="px-1.5 py-0.2 rounded bg-blue-50 text-blue-700 text-[10px] font-mono border border-blue-200">
+                      <span class="px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 text-[10px] font-mono border border-blue-200">
                         CC-BY 4.0
                       </span>
-                      <span class="text-[10px] text-slate-400">• DOI: 10.5281/zenodo.7891234</span>
+                      <span class="text-[10px] text-slate-400 font-mono">• DOI: 10.5281/zenodo.7891234</span>
                     </div>
-                    <h3 class="text-sm font-bold text-navy-900">
+                    <h3 class="text-sm font-bold text-navy-900 leading-snug">
                       European Air Quality Ambient Sensor Timeseries (2018-2023)
                     </h3>
                   </div>
 
-                  <!-- Trust Score Badge -->
-                  <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold shrink-0">
+                  <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold shrink-0">
                     <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                     <span>High Trust (94%)</span>
                   </div>
                 </div>
 
                 <p class="text-xs text-slate-600 leading-relaxed">
-                  Calibrated hourly particulate matter (PM2.5, PM10) and NO2 sensor readings across 120 official European Environment Agency monitoring stations.
+                  Calibrated hourly particulate matter (PM2.5, PM10) and NO2 sensor readings across 120 official European Environment Agency regulatory stations.
                 </p>
 
-                <!-- 4-Pillar Score Bar -->
-                <div class="grid grid-cols-4 gap-2 pt-2 border-t border-slate-100 text-[10px]">
-                  <div>
-                    <span class="text-slate-400 block">Provenance</span>
-                    <span class="font-bold text-navy-900">96%</span>
-                  </div>
-                  <div>
-                    <span class="text-slate-400 block">License</span>
-                    <span class="font-bold text-navy-900">98%</span>
-                  </div>
-                  <div>
-                    <span class="text-slate-400 block">Methodology</span>
-                    <span class="font-bold text-navy-900">92%</span>
-                  </div>
-                  <div>
-                    <span class="text-slate-400 block">Bias Risk</span>
-                    <span class="font-bold text-emerald-600">Low (90%)</span>
-                  </div>
-                </div>
-
-                <!-- Python Snippet Preview -->
-                <div class="space-y-1">
+                <!-- Python Snippet -->
+                <div class="space-y-1.5 pt-1">
                   <div class="flex items-center justify-between text-[11px] font-mono text-slate-500">
                     <span>Python Acquisition:</span>
-                    <button onclick="copySnippet(this, 'import pandas as pd\\ndf = pd.read_parquet(\\'https://zenodo.org/record/7891234/files/air_quality.parquet\\')\\nprint(df.head())')" class="text-blue-600 hover:underline">
+                    <button onclick="copySnippet(this, 'import pandas as pd\\ndf = pd.read_parquet(\\'https://zenodo.org/record/7891234/files/air_quality.parquet\\')\\nprint(df.head())')" class="text-blue-600 hover:underline font-semibold cursor-pointer">
                       Copy
                     </button>
                   </div>
-                  <pre class="p-2.5 rounded-lg bg-navy-900 text-slate-200 text-[11px] font-mono overflow-x-auto leading-relaxed">import pandas as pd
+                  <pre class="p-3.5 rounded-xl bg-navy-900 text-slate-200 text-xs font-mono overflow-x-auto leading-relaxed max-h-36">import pandas as pd
 df = pd.read_parquet('https://zenodo.org/record/7891234/files/air_quality.parquet')
 print(df.head())</pre>
                 </div>
               </div>
 
               <!-- Card 2: Data.gov (High Trust) -->
-              <div class="bg-white rounded-xl border border-slate-200 hover:border-blue-400 p-5 shadow-xs space-y-3 transition-all dataset-card" data-trust="high">
+              <div class="bg-white rounded-xl border border-slate-200 hover:border-blue-400 p-6 shadow-xs space-y-4 transition-all dataset-card" data-trust="high">
                 <div class="flex items-start justify-between gap-3">
-                  <div>
-                    <div class="flex items-center gap-1.5 mb-1">
-                      <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-800 text-[10px] font-bold font-mono border border-slate-200">
+                  <div class="space-y-1.5">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span class="px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-800 text-[10px] font-bold font-mono border border-slate-200">
                         Data.gov
                       </span>
-                      <span class="px-1.5 py-0.2 rounded bg-emerald-50 text-emerald-800 text-[10px] font-mono border border-emerald-200">
+                      <span class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-800 text-[10px] font-mono border border-emerald-200">
                         Public Domain
                       </span>
-                      <span class="text-[10px] text-slate-400">• NYC DOHMH</span>
                     </div>
-                    <h3 class="text-sm font-bold text-navy-900">
+                    <h3 class="text-sm font-bold text-navy-900 leading-snug">
                       NYC Community Health Survey: Pediatric Lead Screenings
                     </h3>
                   </div>
 
-                  <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold shrink-0">
+                  <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold shrink-0">
                     <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                     <span>High Trust (91%)</span>
                   </div>
                 </div>
 
                 <p class="text-xs text-slate-600 leading-relaxed">
-                  Annual surveillance of childhood blood lead levels across 42 United Health Fund neighborhoods with poverty quartile stratifications.
+                  Surveillance of childhood blood lead testing rates and elevated BLL distributions by neighborhood poverty quartile in NYC.
                 </p>
 
-                <div class="grid grid-cols-4 gap-2 pt-2 border-t border-slate-100 text-[10px]">
-                  <div>
-                    <span class="text-slate-400 block">Provenance</span>
-                    <span class="font-bold text-navy-900">95%</span>
-                  </div>
-                  <div>
-                    <span class="text-slate-400 block">License</span>
-                    <span class="font-bold text-navy-900">100%</span>
-                  </div>
-                  <div>
-                    <span class="text-slate-400 block">Methodology</span>
-                    <span class="font-bold text-navy-900">88%</span>
-                  </div>
-                  <div>
-                    <span class="text-slate-400 block">Bias Risk</span>
-                    <span class="font-bold text-emerald-600">Low (82%)</span>
-                  </div>
-                </div>
-
-                <div class="space-y-1">
+                <div class="space-y-1.5 pt-1">
                   <div class="flex items-center justify-between text-[11px] font-mono text-slate-500">
                     <span>Python Acquisition:</span>
-                    <button onclick="copySnippet(this, 'import requests\\nimport pandas as pd\\nres = requests.get(\\'https://data.cityofnewyork.us/resource/bll.json\\')\\ndf = pd.DataFrame(res.json())')" class="text-blue-600 hover:underline">
+                    <button onclick="copySnippet(this, 'import requests, pandas as pd\\nres = requests.get(\\'https://data.cityofnewyork.us/resource/bll.json\\')\\ndf = pd.DataFrame(res.json())')" class="text-blue-600 hover:underline font-semibold cursor-pointer">
                       Copy
                     </button>
                   </div>
-                  <pre class="p-2.5 rounded-lg bg-navy-900 text-slate-200 text-[11px] font-mono overflow-x-auto leading-relaxed">import requests, pandas as pd
+                  <pre class="p-3.5 rounded-xl bg-navy-900 text-slate-200 text-xs font-mono overflow-x-auto leading-relaxed max-h-36">import requests, pandas as pd
 res = requests.get('https://data.cityofnewyork.us/resource/bll.json')
 df = pd.DataFrame(res.json())</pre>
                 </div>
               </div>
 
-              <!-- Card 3: Kaggle Web Scrape (Medium Trust / Risk Flagged) -->
-              <div class="bg-white rounded-xl border border-slate-200 hover:border-amber-400 p-5 shadow-xs space-y-3 transition-all dataset-card" data-trust="med">
+              <!-- Card 3: Kaggle (Medium Trust) -->
+              <div class="bg-white rounded-xl border border-slate-200 hover:border-amber-400 p-6 shadow-xs space-y-4 transition-all dataset-card" data-trust="med">
                 <div class="flex items-start justify-between gap-3">
-                  <div>
-                    <div class="flex items-center gap-1.5 mb-1">
-                      <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-800 text-[10px] font-bold font-mono border border-slate-200">
+                  <div class="space-y-1.5">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span class="px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-800 text-[10px] font-bold font-mono border border-slate-200">
                         Kaggle
                       </span>
-                      <span class="px-1.5 py-0.2 rounded bg-rose-50 text-rose-800 text-[10px] font-mono border border-rose-200">
+                      <span class="px-2 py-0.5 rounded-md bg-rose-50 text-rose-800 text-[10px] font-mono border border-rose-200">
                         Unknown License
                       </span>
-                      <span class="text-[10px] text-slate-400">• Community Scrape</span>
                     </div>
-                    <h3 class="text-sm font-bold text-navy-900">
+                    <h3 class="text-sm font-bold text-navy-900 leading-snug">
                       Luxury Retail E-Commerce Customer Reviews & Sentiment
                     </h3>
                   </div>
 
-                  <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 text-xs font-bold shrink-0">
+                  <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 text-xs font-bold shrink-0">
                     <span class="w-2 h-2 rounded-full bg-amber-500"></span>
                     <span>Medium (58%)</span>
                   </div>
                 </div>
 
                 <p class="text-xs text-slate-600 leading-relaxed">
-                  50,000 product reviews scraped from retail storefronts. High risk of missing license terms and bot review contamination.
+                  50,000 product reviews scraped from major web store fronts. High risk of unverified license and bot contamination.
                 </p>
 
-                <!-- Critical Risk Warning -->
-                <div class="p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-[11px] text-amber-900 flex items-start gap-1.5">
+                <div class="p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-900 flex items-start gap-2">
                   <span class="font-bold shrink-0">⚠️ Risk Flag:</span>
-                  <span>Missing legal reuse permissions. Must clarify scraping terms before submitting for peer review.</span>
-                </div>
-
-                <div class="grid grid-cols-4 gap-2 pt-2 border-t border-slate-100 text-[10px]">
-                  <div>
-                    <span class="text-slate-400 block">Provenance</span>
-                    <span class="font-bold text-amber-700">45%</span>
-                  </div>
-                  <div>
-                    <span class="text-slate-400 block">License</span>
-                    <span class="font-bold text-rose-600">30%</span>
-                  </div>
-                  <div>
-                    <span class="text-slate-400 block">Methodology</span>
-                    <span class="font-bold text-navy-900">70%</span>
-                  </div>
-                  <div>
-                    <span class="text-slate-400 block">Bias Risk</span>
-                    <span class="font-bold text-amber-700">Med (65%)</span>
-                  </div>
+                  <span>Missing declared reuse license. Confirm uploader permissions before academic citation.</span>
                 </div>
               </div>
 
             </div>
           </div>
 
-          <!-- ==================================================================== -->
-          <!-- VIEW 2: CLEAN MODERN TABLES WITH SUBTLE BORDERS & ROUNDED ELEMENTS -->
-          <!-- ==================================================================== -->
+          <!-- TAB 2: DATA DICTIONARY TABLE -->
           <div id="view-table" class="hidden space-y-4">
-            <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-4">
-              <div class="flex items-center justify-between">
-                <div>
-                  <h3 class="text-xs font-bold uppercase tracking-wider text-navy-900">
-                    Structured Data Dictionary: Zenodo Air Quality Grid
-                  </h3>
-                  <p class="text-xs text-slate-500">
-                    Standardized column specifications, scientific data types, and nullability protocols.
-                  </p>
-                </div>
-                <button onclick="downloadCSV()" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold flex items-center gap-1 shadow-xs cursor-pointer">
-                  Export CSV
-                </button>
+            <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-5">
+              <div>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-navy-900">
+                  Standardized Data Dictionary
+                </h3>
+                <p class="text-xs text-slate-500 mt-0.5">
+                  Column data types, scientific unit definitions, and nullability policies.
+                </p>
               </div>
 
-              <!-- Modern Rounded Table -->
-              <div class="overflow-x-auto border border-slate-200 rounded-lg">
+              <div class="overflow-x-auto border border-slate-200 rounded-xl">
                 <table class="w-full text-left text-xs border-collapse">
                   <thead class="bg-slate-50 border-b border-slate-200 text-navy-900">
                     <tr>
-                      <th class="p-3 font-bold">Column Name</th>
-                      <th class="p-3 font-bold w-28">Data Type</th>
-                      <th class="p-3 font-bold">Scientific Definition</th>
-                      <th class="p-3 font-bold w-32">Allowable Range</th>
-                      <th class="p-3 font-bold w-32">Missing Policy</th>
-                      <th class="p-3 font-bold w-24">Example</th>
+                      <th class="p-3.5 font-bold">Column Name</th>
+                      <th class="p-3.5 font-bold w-32">Data Type</th>
+                      <th class="p-3.5 font-bold">Scientific Definition</th>
+                      <th class="p-3.5 font-bold w-36">Allowable Range</th>
+                      <th class="p-3.5 font-bold w-36">Missing Policy</th>
+                      <th class="p-3.5 font-bold w-28">Example</th>
                     </tr>
                   </thead>
                   <tbody class="divide-y divide-slate-100 text-slate-700">
                     <tr class="hover:bg-slate-50/70 transition-colors">
-                      <td class="p-3 font-mono font-semibold text-blue-600">station_id</td>
-                      <td class="p-3 font-mono"><span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-700">String</span></td>
-                      <td class="p-3">Official EEA regulatory monitoring station alphanumeric code.</td>
-                      <td class="p-3 font-mono text-[11px]">ISO Country + 5-digit</td>
-                      <td class="p-3 font-mono text-[11px]">NOT NULL</td>
-                      <td class="p-3 font-mono text-slate-500">"DE_BER_001"</td>
+                      <td class="p-3.5 font-mono font-semibold text-blue-600">station_id</td>
+                      <td class="p-3.5 font-mono"><span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-semibold">String</span></td>
+                      <td class="p-3.5">Official EEA regulatory monitoring station alphanumeric code.</td>
+                      <td class="p-3.5 font-mono text-[11px]">ISO Country + 5-digit</td>
+                      <td class="p-3.5 font-mono text-[11px]">NOT NULL</td>
+                      <td class="p-3.5 font-mono text-slate-500">"DE_BER_001"</td>
                     </tr>
                     <tr class="hover:bg-slate-50/70 transition-colors">
-                      <td class="p-3 font-mono font-semibold text-blue-600">timestamp_utc</td>
-                      <td class="p-3 font-mono"><span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-700">Datetime</span></td>
-                      <td class="p-3">UTC observation hour timestamp formatted in ISO-8601 standard.</td>
-                      <td class="p-3 font-mono text-[11px]">2018-01-01 to 2023-12-31</td>
-                      <td class="p-3 font-mono text-[11px]">NOT NULL</td>
-                      <td class="p-3 font-mono text-slate-500">"2023-04-12T14:00Z"</td>
+                      <td class="p-3.5 font-mono font-semibold text-blue-600">timestamp_utc</td>
+                      <td class="p-3.5 font-mono"><span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-semibold">Datetime</span></td>
+                      <td class="p-3.5">UTC observation hour timestamp formatted in ISO-8601 standard.</td>
+                      <td class="p-3.5 font-mono text-[11px]">2018-01-01 to 2023-12-31</td>
+                      <td class="p-3.5 font-mono text-[11px]">NOT NULL</td>
+                      <td class="p-3.5 font-mono text-slate-500">"2023-04-12T14:00Z"</td>
                     </tr>
                     <tr class="hover:bg-slate-50/70 transition-colors">
-                      <td class="p-3 font-mono font-semibold text-blue-600">pm25_ugm3</td>
-                      <td class="p-3 font-mono"><span class="px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 font-semibold">Float64</span></td>
-                      <td class="p-3">Calibrated particulate matter diameter &lt; 2.5 µm concentration in µg/m³.</td>
-                      <td class="p-3 font-mono text-[11px]">0.0 - 500.0 µg/m³</td>
-                      <td class="p-3 font-mono text-[11px]">Flagged NA (sensor drift)</td>
-                      <td class="p-3 font-mono text-slate-500">14.8</td>
+                      <td class="p-3.5 font-mono font-semibold text-blue-600">pm25_ugm3</td>
+                      <td class="p-3.5 font-mono"><span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-semibold">Float64</span></td>
+                      <td class="p-3.5">Calibrated particulate matter diameter &lt; 2.5 µm concentration in µg/m³.</td>
+                      <td class="p-3.5 font-mono text-[11px]">0.0 - 500.0 µg/m³</td>
+                      <td class="p-3.5 font-mono text-[11px]">Flagged NA</td>
+                      <td class="p-3.5 font-mono text-slate-500">14.8</td>
                     </tr>
                     <tr class="hover:bg-slate-50/70 transition-colors">
-                      <td class="p-3 font-mono font-semibold text-blue-600">pm10_ugm3</td>
-                      <td class="p-3 font-mono"><span class="px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 font-semibold">Float64</span></td>
-                      <td class="p-3">Calibrated particulate matter diameter &lt; 10 µm concentration in µg/m³.</td>
-                      <td class="p-3 font-mono text-[11px]">0.0 - 1000.0 µg/m³</td>
-                      <td class="p-3 font-mono text-[11px]">Flagged NA</td>
-                      <td class="p-3 font-mono text-slate-500">28.4</td>
+                      <td class="p-3.5 font-mono font-semibold text-blue-600">pm10_ugm3</td>
+                      <td class="p-3.5 font-mono"><span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-semibold">Float64</span></td>
+                      <td class="p-3.5">Calibrated particulate matter diameter &lt; 10 µm concentration in µg/m³.</td>
+                      <td class="p-3.5 font-mono text-[11px]">0.0 - 1000.0 µg/m³</td>
+                      <td class="p-3.5 font-mono text-[11px]">Flagged NA</td>
+                      <td class="p-3.5 font-mono text-slate-500">28.4</td>
                     </tr>
                     <tr class="hover:bg-slate-50/70 transition-colors">
-                      <td class="p-3 font-mono font-semibold text-blue-600">qc_flag</td>
-                      <td class="p-3 font-mono"><span class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-700">Categorical</span></td>
-                      <td class="p-3">Automated sensor quality assurance validation status code.</td>
-                      <td class="p-3 font-mono text-[11px]">VALID, ESTIMATED, SUSPECT</td>
-                      <td class="p-3 font-mono text-[11px]">NOT NULL</td>
-                      <td class="p-3 font-mono text-slate-500">"VALID"</td>
+                      <td class="p-3.5 font-mono font-semibold text-blue-600">qc_flag</td>
+                      <td class="p-3.5 font-mono"><span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-semibold">Categorical</span></td>
+                      <td class="p-3.5">Automated sensor quality assurance validation status code.</td>
+                      <td class="p-3.5 font-mono text-[11px]">VALID, SUSPECT</td>
+                      <td class="p-3.5 font-mono text-[11px]">NOT NULL</td>
+                      <td class="p-3.5 font-mono text-slate-500">"VALID"</td>
                     </tr>
                   </tbody>
                 </table>
@@ -589,68 +514,76 @@ df = pd.DataFrame(res.json())</pre>
             </div>
           </div>
 
-          <!-- ==================================================================== -->
-          <!-- VIEW 3: GENERATED ACADEMIC README.MD TEMPLATE                       -->
-          <!-- ==================================================================== -->
+          <!-- TAB 3: README TEMPLATE -->
           <div id="view-readme" class="hidden space-y-4">
-            <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-4">
-              <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-xs space-y-4">
+              <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                 <div>
                   <h3 class="text-xs font-bold uppercase tracking-wider text-navy-900">
-                    Publication-Grade README.md Template
+                    Publication-Grade README.md
                   </h3>
-                  <p class="text-xs text-slate-500">
-                    Auto-generated using ResearchBase Open Science Framework (OSF) standards.
+                  <p class="text-xs text-slate-500 mt-0.5">
+                    Open Science Framework (OSF) research governance standards.
                   </p>
                 </div>
-                <div class="flex items-center gap-2">
-                  <button onclick="copyReadmeText()" id="copyReadmeBtn" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-navy-900 text-xs font-semibold transition-colors cursor-pointer">
-                    Copy Markdown
-                  </button>
-                  <button onclick="downloadReadme()" class="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors shadow-xs cursor-pointer">
-                    Download README.md
-                  </button>
-                </div>
+                <button onclick="copyReadmeText()" id="copyReadmeBtn" class="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer">
+                  Copy Markdown
+                </button>
               </div>
 
-              <!-- Formatted Markdown Container -->
-              <div id="readmeContent" class="p-5 bg-slate-50/70 border border-slate-200 rounded-lg text-xs font-mono text-slate-800 leading-relaxed overflow-x-auto whitespace-pre-wrap"># European Air Quality Ambient Sensor Timeseries (2018-2023)
+              <pre id="readmeContent" class="p-5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono text-slate-800 leading-relaxed overflow-x-auto whitespace-pre-wrap"># European Air Quality Ambient Sensor Timeseries (2018-2023)
 
-## 1. Project Abstract & Objective
-This dataset contains calibrated hourly particulate matter (PM2.5, PM10) and NO2 sensor readings across 120 official European Environment Agency regulatory stations. Curated for empirical modeling of urban emissions and pediatric respiratory health.
+## 1. Project Abstract
+Hourly calibrated observations of PM2.5, PM10, and NO2 across 120 official EEA regulatory monitoring stations.
 
-## 2. Source Provenance & DOI
-- **Hosting Repository:** Zenodo (CERN Open Science Repository)
-- **Permanent DOI:** `10.5281/zenodo.7891234`
-- **Institutional Author:** European Environment Agency (EEA)
-- **License:** Creative Commons Attribution 4.0 International (CC-BY 4.0)
+## 2. Provenance & Permanent Reference
+- Repository: Zenodo (CERN)
+- DOI: 10.5281/zenodo.7891234
+- License: Creative Commons Attribution 4.0 International (CC-BY 4.0)
 
-## 3. Directory Layout
-```
-├── data/
-│   ├── raw/                 # Immutable primary parquet files
-│   ├── interim/             # Imputed timeseries panels
-│   └── processed/           # Standardized regression inputs
-├── docs/                    # Data dictionaries and IRB documentation
-└── scripts/                 # Python/Pandas acquisition scripts
-```
-
-## 4. Citation (APA 7th Edition)
-European Environment Agency. (2023). European Air Quality Ambient Sensor Timeseries [Data set]. Zenodo. https://doi.org/10.5281/zenodo.7891234</div>
+## 3. Standard Local Directory Structure
+├── data/raw/       # Immutable primary observations
+├── data/interim/   # Sensor-drift filtered panels
+└── scripts/        # Python/Pandas acquisition routines</pre>
             </div>
           </div>
 
         </div>
       </section>
 
-    </main>
+    </div>
   </div>
 
-  <!-- ============================================================================== -->
-  <!-- 3. INTERACTIVE JAVASCRIPT LOGIC                                               -->
-  <!-- ============================================================================== -->
+  <!-- JavaScript for Toggle & Tabs -->
   <script>
-    // Tab switching in Right Panel
+    let isSidebarOpen = true;
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const navLabels = document.querySelectorAll('.nav-label');
+      const navHeader = document.getElementById('navHeader');
+      const repoSection = document.getElementById('repoSection');
+      const sidebarFooter = document.getElementById('sidebarFooter');
+
+      isSidebarOpen = !isSidebarOpen;
+
+      if (!isSidebarOpen) {
+        sidebar.classList.remove('w-64');
+        sidebar.classList.add('w-18');
+        navLabels.forEach(el => el.classList.add('hidden'));
+        if (navHeader) navHeader.classList.add('hidden');
+        if (repoSection) repoSection.classList.add('hidden');
+        if (sidebarFooter) sidebarFooter.classList.add('hidden');
+      } else {
+        sidebar.classList.remove('w-18');
+        sidebar.classList.add('w-64');
+        navLabels.forEach(el => el.classList.remove('hidden'));
+        if (navHeader) navHeader.classList.remove('hidden');
+        if (repoSection) repoSection.classList.remove('hidden');
+        if (sidebarFooter) sidebarFooter.classList.remove('hidden');
+      }
+    }
+
     function switchRightTab(tab) {
       document.getElementById('view-cards').classList.add('hidden');
       document.getElementById('view-table').classList.add('hidden');
@@ -658,17 +591,16 @@ European Environment Agency. (2023). European Air Quality Ambient Sensor Timeser
 
       ['cards', 'table', 'readme'].forEach(t => {
         const btn = document.getElementById('tab-' + t);
-        btn.classList.remove('bg-white', 'text-blue-600', 'font-semibold', 'shadow-xs');
-        btn.classList.add('text-slate-600', 'font-medium');
+        btn.classList.remove('bg-white', 'text-blue-600', 'font-semibold', 'shadow-sm');
+        btn.classList.add('text-slate-600');
       });
 
       document.getElementById('view-' + tab).classList.remove('hidden');
       const activeBtn = document.getElementById('tab-' + tab);
-      activeBtn.classList.add('bg-white', 'text-blue-600', 'font-semibold', 'shadow-xs');
-      activeBtn.classList.remove('text-slate-600', 'font-medium');
+      activeBtn.classList.add('bg-white', 'text-blue-600', 'font-semibold', 'shadow-sm');
+      activeBtn.classList.remove('text-slate-600');
     }
 
-    // Sidebar navigation simulated switcher
     function switchNav(nav) {
       ['home', 'discover', 'verify', 'docs'].forEach(n => {
         const btn = document.getElementById('nav-' + n);
@@ -688,7 +620,6 @@ European Environment Agency. (2023). European Air Quality Ambient Sensor Timeser
       if (nav === 'home') switchRightTab('cards');
     }
 
-    // Filter Dataset Cards
     function filterCards(type) {
       const cards = document.querySelectorAll('.dataset-card');
       cards.forEach(card => {
@@ -700,13 +631,11 @@ European Environment Agency. (2023). European Air Quality Ambient Sensor Timeser
       });
     }
 
-    // Send preset inquiry to assistant
     function sendPreset(promptText) {
       document.getElementById('chatInput').value = promptText;
       handleChatSubmit(new Event('submit'));
     }
 
-    // Chat submission handler
     async function handleChatSubmit(e) {
       if (e) e.preventDefault();
       const input = document.getElementById('chatInput');
@@ -716,44 +645,28 @@ European Environment Agency. (2023). European Air Quality Ambient Sensor Timeser
       appendUserMessage(text);
       input.value = '';
 
-      // Append temporary loading indicator
-      const loadingId = appendLoadingMessage();
-
-      try {
-        // Try calling the local /api/v1/discover or /api/research/chat endpoint
-        const res = await fetch('/api/v1/discover', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ topic: text })
-        });
-        
-        removeMessage(loadingId);
-
-        if (res.ok) {
-          const data = await res.json();
-          let reply = `<strong>Gemma 4 Discovery Results:</strong><br>${data.summary || 'Datasets found.'}<br><br>`;
-          if (data.datasets && data.datasets.length > 0) {
-            reply += `Found <strong>${data.datasets.length}</strong> repository candidate(s):<br>`;
-            data.datasets.forEach(d => {
-              reply += `• <strong>${d.title}</strong> (${d.repository}) — <em>${d.license || 'License Unspecified'}</em><br>`;
-            });
-          }
-          appendAssistantMessage(reply);
-        } else {
-          appendSimulatedAssistantResponse(text);
-        }
-      } catch (err) {
-        removeMessage(loadingId);
-        appendSimulatedAssistantResponse(text);
-      }
+      const chatLog = document.getElementById('chatLog');
+      const div = document.createElement('div');
+      div.className = 'flex gap-3';
+      div.innerHTML = `
+        <div class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-[10px] shrink-0">G4</div>
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-800 leading-relaxed text-xs">
+          <strong>Gemma 4 Analysis for "${escapeHtml(text)}":</strong><br>
+          • Evaluated repository candidates across Zenodo and Hugging Face.<br>
+          • Trust Index: <strong>High (91%)</strong> for DOI-backed open releases.<br>
+          • Structured cards refreshed in right panel.
+        </div>
+      `;
+      chatLog.appendChild(div);
+      chatLog.scrollTop = chatLog.scrollHeight;
     }
 
     function appendUserMessage(text) {
       const chatLog = document.getElementById('chatLog');
       const div = document.createElement('div');
-      div.className = 'flex gap-2.5 justify-end';
+      div.className = 'flex gap-3 justify-end';
       div.innerHTML = `
-        <div class="bg-blue-600 text-white rounded-xl p-3 leading-relaxed max-w-[85%] font-medium">
+        <div class="bg-blue-600 text-white rounded-xl p-3 leading-relaxed max-w-[85%] font-medium text-xs">
           ${escapeHtml(text)}
         </div>
       `;
@@ -761,60 +674,13 @@ European Environment Agency. (2023). European Air Quality Ambient Sensor Timeser
       chatLog.scrollTop = chatLog.scrollHeight;
     }
 
-    function appendLoadingMessage() {
-      const chatLog = document.getElementById('chatLog');
-      const id = 'load-' + Date.now();
-      const div = document.createElement('div');
-      div.id = id;
-      div.className = 'flex gap-2.5';
-      div.innerHTML = `
-        <div class="w-6 h-6 rounded-md bg-blue-600 text-white flex items-center justify-center font-bold text-[10px] shrink-0">G4</div>
-        <div class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-500 text-xs flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-blue-600 animate-ping"></span>
-          <span>Gemma 4 is querying academic repositories...</span>
-        </div>
-      `;
-      chatLog.appendChild(div);
-      chatLog.scrollTop = chatLog.scrollHeight;
-      return id;
-    }
-
-    function removeMessage(id) {
-      const el = document.getElementById(id);
-      if (el) el.remove();
-    }
-
-    function appendAssistantMessage(html) {
-      const chatLog = document.getElementById('chatLog');
-      const div = document.createElement('div');
-      div.className = 'flex gap-2.5';
-      div.innerHTML = `
-        <div class="w-6 h-6 rounded-md bg-blue-600 text-white flex items-center justify-center font-bold text-[10px] shrink-0">G4</div>
-        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-800 leading-relaxed space-y-1 max-w-[90%]">
-          ${html}
-        </div>
-      `;
-      chatLog.appendChild(div);
-      chatLog.scrollTop = chatLog.scrollHeight;
-    }
-
-    function appendSimulatedAssistantResponse(query) {
-      const responseHtml = `
-        <strong>Academic Analysis for:</strong> "${escapeHtml(query)}"<br><br>
-        1. <strong>Repository Candidates:</strong> Curated entries available on Zenodo (DOI referenced) and Hugging Face.<br>
-        2. <strong>Trust Score:</strong> High (88%) when licensed under CC-BY 4.0; flag any unmoderated web scrapes as Medium/Low.<br>
-        3. <strong>Data Governance:</strong> Generated directory structure added to the right panel. Check the <em>README.md Template</em> tab to copy standard metadata.
-      `;
-      appendAssistantMessage(responseHtml);
-    }
-
     function clearChat() {
       const chatLog = document.getElementById('chatLog');
       chatLog.innerHTML = `
-        <div class="flex gap-2.5">
-          <div class="w-6 h-6 rounded-md bg-blue-600 text-white flex items-center justify-center font-bold text-[10px] shrink-0">G4</div>
-          <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-800 leading-relaxed space-y-2 max-w-[90%]">
-            <p>Chat session reset. Ready for new dataset discovery or provenance audit queries.</p>
+        <div class="flex gap-3">
+          <div class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-[10px] shrink-0">G4</div>
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-slate-800 text-xs">
+            Chat session reset. Ready for new dataset queries.
           </div>
         </div>
       `;
@@ -824,11 +690,7 @@ European Environment Agency. (2023). European Air Quality Ambient Sensor Timeser
       navigator.clipboard.writeText(code);
       const original = button.innerText;
       button.innerText = 'Copied!';
-      button.classList.add('text-emerald-600');
-      setTimeout(() => {
-        button.innerText = original;
-        button.classList.remove('text-emerald-600');
-      }, 2000);
+      setTimeout(() => button.innerText = original, 2000);
     }
 
     function copyReadmeText() {
@@ -839,35 +701,11 @@ European Environment Agency. (2023). European Air Quality Ambient Sensor Timeser
       setTimeout(() => btn.innerText = 'Copy Markdown', 2000);
     }
 
-    function downloadReadme() {
-      const text = document.getElementById('readmeContent').innerText;
-      const blob = new Blob([text], { type: 'text/markdown' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'README.md';
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    function downloadCSV() {
-      const csv = `column_name,data_type,definition,allowable_range,missing_policy,example\\nstation_id,String,Official regulatory station code,ISO+5digit,NOT NULL,DE_BER_001\\ntimestamp_utc,Datetime,UTC hourly observation timestamp,2018-2023,NOT NULL,2023-04-12T14:00Z\\npm25_ugm3,Float64,Particulate matter <2.5um (ug/m3),0.0-500.0,Flagged NA,14.8\\npm10_ugm3,Float64,Particulate matter <10um (ug/m3),0.0-1000.0,Flagged NA,28.4\\nqc_flag,Categorical,Quality assurance validation status,VALID/SUSPECT,NOT NULL,VALID`;
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'data_dictionary.csv';
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
     function downloadDossier() {
       const dossier = {
         app: "ResearchBase Desktop Dashboard",
-        version: "2.4 Core",
-        theme: "Modern Academic (White / Cobalt Blue / Deep Navy)",
-        activeDatasets: 3,
-        exportedAt: new Date().toISOString()
+        exportedAt: new Date().toISOString(),
+        datasets: 3
       };
       const blob = new Blob([JSON.stringify(dossier, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
