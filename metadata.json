@@ -1,0 +1,6 @@
+{
+  "name": "ResearchBase - Academic Dataset Engine",
+  "description": "Intelligent desktop application helping beginner researchers discover, organize, verify, and document datasets with real-time provenance audits and trust scoring.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
