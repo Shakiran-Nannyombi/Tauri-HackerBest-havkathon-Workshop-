@@ -1,12 +1,17 @@
 # ResearchBase FastAPI Backend Service
 
-This directory contains the Python FastAPI backend service for the **ResearchBase** desktop application.
+This directory contains the Python FastAPI backend service for the **ResearchBase** application.
+
+- **Live Frontend (Vercel):** [https://tauri-hacker-best-havkathon-worksho.vercel.app/](https://tauri-hacker-best-havkathon-worksho.vercel.app/)
+- **Render Service Blueprint:** `render.yaml` & `Procfile`
+
+---
 
 ## Endpoints Implemented
 
 1. **`POST /api/v1/discover`**
    - Accepts: `{"topic": "research topic string", "discipline": "...", "repositories": ["Kaggle", "Hugging Face"]}`
-   - Returns: Simulated and/or live AI dataset recommendations with repository queries, licenses, and Python acquisition snippets.
+   - Returns: Live Google AI Studio / Gemma-4 dataset recommendations with repository queries, licenses, and Python acquisition snippets.
 
 2. **`POST /api/v1/verify`**
    - Accepts: `{"dataset_name": "...", "declared_license": "...", "author_reputation": "...", "source_url_or_path": "..."}`
@@ -16,21 +21,45 @@ This directory contains the Python FastAPI backend service for the **ResearchBas
 3. **`GET /health`**
    - Returns service health and Google AI Studio API key configuration status.
 
-## CORS Configuration
-CORS middleware is pre-configured to allow local desktop apps (Electron, React, Tauri on `localhost:3000`, `localhost:5173`, `app://.`, etc.) to communicate without cross-origin blocks.
+---
 
-## Running the Service
+## CORS Configuration
+
+CORS middleware allows:
+- Local desktop environments (`localhost:3000`, `localhost:5173`, `app://.`)
+- Production Vercel domain: `https://tauri-hacker-best-havkathon-worksho.vercel.app/`
+- Wildcard support for Vercel preview URLs via regex: `https://.*\.vercel\.app`
+
+To add custom domains, set the `ALLOWED_ORIGINS` environment variable:
+```env
+ALLOWED_ORIGINS=https://tauri-hacker-best-havkathon-worksho.vercel.app,http://localhost:3000
+```
+
+---
+
+## Running Locally
 
 ```bash
 # 1. Install dependencies
 pip install -r requirements.txt
 
-# 2. Set your Google AI Studio API key (optional for AI-augmented discovery)
+# 2. Set your Google AI Studio API key
 export GEMINI_API_KEY="your-api-key"
 
 # 3. Launch server with hot reloading
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-Interactive OpenAPI Swagger documentation will be available at:
+Interactive OpenAPI Swagger documentation:
 `http://localhost:8000/docs`
+
+---
+
+## Deploying to Render
+
+1. On [Render](https://dashboard.render.com), create a new **Web Service** or **Blueprint**.
+2. Connect this repository and set the Root Directory to `backend`.
+3. Set the Environment Variables:
+   - `GEMINI_API_KEY`: Your Google AI Studio API key.
+   - `ALLOWED_ORIGINS`: `https://tauri-hacker-best-havkathon-worksho.vercel.app`
+4. Deploy!
