@@ -13,6 +13,7 @@ import {
   ArrowRight,
   ShieldCheck,
 } from 'lucide-react';
+import { getApiUrl, BACKEND_URL } from '../services/apiConfig';
 
 export const FastApiWorkbench: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'tester' | 'main_py' | 'requirements'>('tester');
@@ -159,7 +160,7 @@ python-dotenv>=1.0.0`;
 
     try {
       if (testEndpoint === 'discover') {
-        const res = await fetch('/api/v1/discover', {
+        const res = await fetch(getApiUrl('/api/v1/discover'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -171,7 +172,7 @@ python-dotenv>=1.0.0`;
         const data = await res.json();
         setTestResponse(data);
       } else {
-        const res = await fetch('/api/v1/verify', {
+        const res = await fetch(getApiUrl('/api/v1/verify'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

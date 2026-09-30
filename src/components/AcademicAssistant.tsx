@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { ChatMessage, GroundingSource } from '../types';
 import { MarkdownRenderer } from './MarkdownRenderer';
+import { getApiUrl } from '../services/apiConfig';
 
 interface AcademicAssistantProps {
   currentProjectContext?: string;
@@ -98,7 +99,7 @@ I am the academic core logic engine of **ResearchBase**. I provide meticulous, o
         content: m.content,
       }));
 
-      const res = await fetch('/api/research/chat', {
+      const res = await fetch(getApiUrl('/api/research/chat'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

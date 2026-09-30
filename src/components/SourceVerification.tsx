@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { TrustAuditResult, VerifyResponse, SavedDatasetRecord } from '../types';
 import { MarkdownRenderer } from './MarkdownRenderer';
+import { getApiUrl } from '../services/apiConfig';
 
 interface SourceVerificationProps {
   initialData?: {
@@ -118,7 +119,7 @@ export const SourceVerification: React.FC<SourceVerificationProps> = ({
     setError(null);
 
     try {
-      const res = await fetch('/api/research/verify', {
+      const res = await fetch(getApiUrl('/api/research/verify'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

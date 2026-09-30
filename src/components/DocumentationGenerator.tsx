@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { DataDictionaryColumn, DocumentationResult, DocumentResponse } from '../types';
 import { MarkdownRenderer } from './MarkdownRenderer';
+import { getApiUrl } from '../services/apiConfig';
 
 interface DocumentationGeneratorProps {
   initialDataset?: {
@@ -97,7 +98,7 @@ export const DocumentationGenerator: React.FC<DocumentationGeneratorProps> = ({
     setError(null);
 
     try {
-      const res = await fetch('/api/research/document', {
+      const res = await fetch(getApiUrl('/api/research/document'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

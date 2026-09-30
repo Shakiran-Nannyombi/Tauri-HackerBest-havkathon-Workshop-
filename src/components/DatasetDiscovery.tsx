@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { DiscoveredDataset, DiscoveryResponse, SavedDatasetRecord } from '../types';
 import { MarkdownRenderer } from './MarkdownRenderer';
+import { getApiUrl } from '../services/apiConfig';
 
 interface DatasetDiscoveryProps {
   onSendToAudit: (dataset: {
@@ -97,7 +98,7 @@ export const DatasetDiscovery: React.FC<DatasetDiscoveryProps> = ({
     setError(null);
 
     try {
-      const res = await fetch('/api/research/discover', {
+      const res = await fetch(getApiUrl('/api/research/discover'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { OrganizationPlan, OrganizeResponse } from '../types';
 import { MarkdownRenderer } from './MarkdownRenderer';
+import { getApiUrl } from '../services/apiConfig';
 
 const PRESET_PROJECTS = [
   {
@@ -68,7 +69,7 @@ export const OrganizationStrategy: React.FC = () => {
     setError(null);
 
     try {
-      const res = await fetch('/api/research/organize', {
+      const res = await fetch(getApiUrl('/api/research/organize'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

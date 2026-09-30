@@ -35,10 +35,11 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-app.add_middleware(
-    CORSMiddleware,
-    # Allow local desktop frontend environments (localhost Vite, Electron, Tauri, etc.)
-    allow_origins=[
+cors_origins_env = os.environ.get("ALLOWED_ORIGINS", "")
+if cors_origins_env and cors_origins_env != "*":
+    origins = [orig.strip() for orig in cors_origins_env.split(",") if orig.strip()]
+else:
+    origins = [
         "http://localhost:3000",
         "http://127.0.0.1:3000",
         "http://localhost:5173",
@@ -46,8 +47,12 @@ app.add_middleware(
         "http://localhost:8000",
         "http://127.0.0.1:8000",
         "app://.",
-        "*"  # Allows desktop apps with non-standard file:// or local schemes
-    ],
+    ]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins if "*" not in origins else ["*"],
+    allow_origin_regex=r"https://.*\.vercel\.app|https://.*\.onrender\.com|http://localhost:\d+|http://127\.0\.0\.1:\d+",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -481,4 +486,5 @@ async def health_check():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("main:app", host="0.0.0.0", port=port, reload=False)

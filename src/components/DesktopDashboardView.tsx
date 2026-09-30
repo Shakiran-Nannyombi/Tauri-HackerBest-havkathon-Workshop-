@@ -14,6 +14,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { SavedDatasetRecord } from '../types';
+import { getApiUrl } from '../services/apiConfig';
 
 interface DesktopDashboardViewProps {
   savedDatasets: SavedDatasetRecord[];
@@ -55,7 +56,7 @@ export const DesktopDashboardView: React.FC<DesktopDashboardViewProps> = ({
     setIsChatLoading(true);
 
     try {
-      const res = await fetch('/api/v1/discover', {
+      const res = await fetch(getApiUrl('/api/v1/discover'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ topic: text }),
