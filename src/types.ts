@@ -1,4 +1,13 @@
-export type NavSection = 'discover' | 'verify' | 'organize' | 'document' | 'assistant' | 'library';
+export type NavSection =
+  | 'home'
+  | 'discover'
+  | 'verify'
+  | 'organize'
+  | 'document'
+  | 'assistant'
+  | 'library'
+  | 'workspace'
+  | 'fastapi';
 
 export interface GroundingSource {
   title: string;

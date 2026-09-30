@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { DesktopHeader } from './components/DesktopHeader';
 import { Sidebar } from './components/Sidebar';
+import { DesktopDashboardView } from './components/DesktopDashboardView';
 import { DatasetDiscovery } from './components/DatasetDiscovery';
 import { SourceVerification } from './components/SourceVerification';
 import { OrganizationStrategy } from './components/OrganizationStrategy';
 import { DocumentationGenerator } from './components/DocumentationGenerator';
 import { AcademicAssistant } from './components/AcademicAssistant';
 import { ProjectLibrary } from './components/ProjectLibrary';
+import { GoogleWorkspacePanel } from './components/GoogleWorkspacePanel';
+import { FastApiWorkbench } from './components/FastApiWorkbench';
 import { ExportModal } from './components/ExportModal';
 import { NavSection, SavedDatasetRecord } from './types';
 
@@ -116,7 +119,7 @@ const INITIAL_BENCHMARKS: SavedDatasetRecord[] = [
 ];
 
 export default function App() {
-  const [currentSection, setCurrentSection] = useState<NavSection>('discover');
+  const [currentSection, setCurrentSection] = useState<NavSection>('home');
   const [savedDatasets, setSavedDatasets] = useState<SavedDatasetRecord[]>(() => {
     try {
       const stored = localStorage.getItem('researchbase_saved_datasets');
@@ -241,6 +244,13 @@ export default function App() {
 
         {/* Dynamic Workflow Workspace Content */}
         <main className="flex-1 overflow-y-auto bg-[#F8FAFC]">
+          {currentSection === 'home' && (
+            <DesktopDashboardView
+              savedDatasets={savedDatasets}
+              projectName={activeProjectName}
+            />
+          )}
+
           {currentSection === 'discover' && (
             <DatasetDiscovery
               onSendToAudit={handleSendToAudit}
@@ -280,6 +290,15 @@ export default function App() {
               projectName={activeProjectName}
             />
           )}
+
+          {currentSection === 'workspace' && (
+            <GoogleWorkspacePanel
+              projectName={activeProjectName}
+              savedDatasets={savedDatasets}
+            />
+          )}
+
+          {currentSection === 'fastapi' && <FastApiWorkbench />}
         </main>
       </div>
 

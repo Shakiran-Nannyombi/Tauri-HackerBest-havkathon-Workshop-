@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Home,
   Compass,
   ShieldCheck,
   FolderTree,
@@ -8,6 +9,8 @@ import {
   BookMarked,
   GraduationCap,
   ExternalLink,
+  HardDrive,
+  Server,
 } from 'lucide-react';
 import { NavSection } from '../types';
 
@@ -30,6 +33,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
     badge?: string | number;
   }> = [
     {
+      id: 'home',
+      label: 'Home Dashboard',
+      description: 'Split-view Gemma 4 copilot',
+      icon: Home,
+    },
+    {
       id: 'discover',
       label: 'Dataset Discovery',
       description: 'Repository queries & acquisition',
@@ -37,21 +46,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
     },
     {
       id: 'verify',
-      label: 'Verification & Trust',
+      label: 'Source Verifier',
       description: 'Provenance, license & bias audit',
       icon: ShieldCheck,
+    },
+    {
+      id: 'document',
+      label: 'Documentation Generator',
+      description: 'README & data dictionary',
+      icon: FileSpreadsheet,
     },
     {
       id: 'organize',
       label: 'Organization Strategy',
       description: 'Directory blueprint & naming',
       icon: FolderTree,
-    },
-    {
-      id: 'document',
-      label: 'Documentation & Dict',
-      description: 'README & data dictionary',
-      icon: FileSpreadsheet,
     },
     {
       id: 'assistant',
@@ -65,6 +74,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
       description: 'Saved datasets & exports',
       icon: BookMarked,
       badge: savedCount > 0 ? savedCount : undefined,
+    },
+    {
+      id: 'workspace',
+      label: 'Google Workspace',
+      description: 'Docs, Sheets, Forms & Drive',
+      icon: HardDrive,
+    },
+    {
+      id: 'fastapi',
+      label: 'FastAPI & Gemma 4',
+      description: 'Python backend service code',
+      icon: Server,
     },
   ];
 
